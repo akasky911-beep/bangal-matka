@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BANGAL MATKA</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+<header>
+
+<div class="banner">
+<img src="images/banner.png">
+</div>
+<div class="top-header">
+
+<div class="top-buttons">
+
+<button class="live-btn">
+🔴 LIVE
+</button>
+
+<button class="refresh-btn" onclick="location.reload()">
+Refresh
+</button>
+
+</div>
+
+<h1>BANGAL MATKA</h1>
+
+<p class="fast-result">
+Fast Results
+</p>
+
+<div class="time-text">
+⏳ Live : <span id="clock"></span>
+</div>
+
+</div>
+<nav>
+<button onclick="showHome()">BM HOME</button>
+<button onclick="showTips()">BM TIPS</button>
+<button onclick="showOld()">OLD RESULT</button>
+</nav>
+
+</header>
+
+<section id="homePage">
+
+
+
+<div class="result-container">
+
+<div class="top-buttons">
+
+</div>
+
+<h2>RESULT TODAY</h2>
+
+<table>
+
+<tr>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+
+<tr>
+<td id="r1">-</td>
+<td id="r2">-</td>
+<td id="r3">-</td>
+<td id="r4">-</td>
+<td id="r5">-</td>
+<td id="r6">-</td>
+<td id="r7">-</td>
+<td id="r8">-</td>
+</tr>
+
+<tr>
+<td id="s1">-</td>
+<td id="s2">-</td>
+<td id="s3">-</td>
+<td id="s4">-</td>
+<td id="s5">-</td>
+<td id="s6">-</td>
+<td id="s7">-</td>
+<td id="s8">-</td>
+</tr>
+
+</table>
+
+</div>
+
+<div class="running-popup">
+<span id="dailyBazi"></span>
+</div>
+
+<div class="previous-box">
+
+<h2>Previous BM Results</h2>
+<div id="previousResults"></div>
+<button class="more-btn" onclick="showOld()">
+MORE RESULTS
+</button>
+
+</div>
+
+</section>
+
+<section id="tipsPage" style="display:none;">
+
+<h2 class="tips-title">
+DAILY 8 BAZI TIPS
+</h2>
+
+<table class="tips-table">
+
+<tr>
+<th>Tip of the Day</th>
+<th><span id="tipDate"></span></th>
+</tr>
+
+<tr><td>1 Bazi</td><td><span id="tip1"></span></td></tr>
+
+<tr><td>2 Bazi</td><td><span id="tip2"></span></td></tr>
+
+<tr><td>3 Bazi</td><td><span id="tip3"></span></td></tr>
+
+<tr><td>4 Bazi</td><td><span id="tip4"></span></td></tr>
+
+<tr><td>5 Bazi</td><td><span id="tip5"></span></td></tr>
+
+<tr><td>6 Bazi</td><td><span id="tip6"></span></td></tr>
+
+<tr><td>7 Bazi</td><td><span id="tip7"></span></td></tr>
+
+<tr><td>8 Bazi</td><td><span id="tip8"></span></td></tr>
+
+</table>
+
+<h2 class="tips-title">TIME TABLE</h2>
+
+<table class="time-table">
+
+<tr>
+<th>BAZI</th>
+<th>TIME</th>
+</tr>
+
+<tr><td>1st Bazi</td><td>10 AM</td></tr>
+<tr><td>2nd Bazi</td><td>11 AM</td></tr>
+<tr><td>3rd Bazi</td><td>12 PM</td></tr>
+<tr><td>4th Bazi</td><td>1 PM</td></tr>
+<tr><td>5th Bazi</td><td>2 PM</td></tr>
+<tr><td>6th Bazi</td><td>3 PM</td></tr>
+<tr><td>7th Bazi</td><td>4 PM</td></tr>
+<tr><td>8th Bazi</td><td>5 PM</td></tr>
+
+</table>
+
+</section>
+
+<section id="oldPage" style="display:none;">
+
+<h2 class="old-title">
+BANGAL MATKA OLD RESULT
+</h2>
+
+<select id="monthSelect" class="month-select">
+</select>
+
+<div id="oldResultsContainer"></div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>
