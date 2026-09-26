@@ -1,313 +1,1552 @@
-// Supabase Configuration
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_KEY = 'YOUR_ANON_KEY';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* =========================================================
+   HARYANA BAZI
+   MAIN WEBSITE JAVASCRIPT
+   ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
-    initApp();
-    setupDropdown();
-    setupNavigation();
-    setupLuckyWheel();
-    setupVoting();
-    
-    document.getElementById('refreshBtn').addEventListener('click', () => {
-        const btn = document.getElementById('refreshBtn');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-        initApp().then(() => {
-            btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
-        });
+
+/* =========================================================
+   DEFAULT DATA
+   ========================================================= */
+
+const defaultData = {
+
+  settings: {
+
+    siteName: "Haryana Bazi",
+
+    news:
+      "Welcome to Haryana Bazi • Daily Updates • Latest Information",
+
+    footerBio:
+      "Simple, clean and mobile-friendly information and entertainment website.",
+
+    aboutTitle:
+      "About Haryana Bazi",
+
+    about:
+      "Haryana Bazi is a simple and mobile-friendly website created to provide information, updates and entertainment features in one place.",
+
+    contactTitle:
+      "Contact Us",
+
+    contact:
+      "For general enquiries, please add your contact information from the admin panel.",
+
+    todayTitle:
+      "Today's Information"
+
+  },
+
+
+  today: {
+
+    title:
+      "Today's Information",
+
+    content:
+      "Today's information has not been updated yet.",
+
+    updated:
+      ""
+
+  },
+
+
+  tips: [
+
+    {
+
+      title:
+        "Welcome Tip",
+
+      description:
+        "Tips content can be updated from the admin panel.",
+
+      date:
+        ""
+
+    }
+
+  ],
+
+
+  updates: [
+
+    {
+
+      title:
+        "Welcome to Haryana Bazi",
+
+      description:
+        "Latest updates will appear here.",
+
+      date:
+        "",
+
+      time:
+        ""
+
+    }
+
+  ],
+
+
+  old: [],
+
+
+  patti: [
+
+    {
+      number: "0",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "1",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "2",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "3",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "4",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "5",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "6",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "7",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "8",
+      information: "Reference",
+      description: ""
+    },
+
+    {
+      number: "9",
+      information: "Reference",
+      description: ""
+    }
+
+  ]
+
+};
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+const STORAGE_KEY =
+  "haryanaBaziWebsiteData";
+
+
+function loadData() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+
+      return structuredClone(defaultData);
+
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return {
+
+      ...structuredClone(defaultData),
+
+      ...parsed,
+
+      settings: {
+
+        ...defaultData.settings,
+
+        ...(parsed.settings || {})
+
+      }
+
+    };
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Data loading error:",
+      error
+    );
+
+    return structuredClone(defaultData);
+
+  }
+
+}
+
+
+let siteData =
+  loadData();
+
+
+/* =========================================================
+   SAVE DATA
+   ========================================================= */
+
+function saveData() {
+
+  localStorage.setItem(
+
+    STORAGE_KEY,
+
+    JSON.stringify(siteData)
+
+  );
+
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+   ========================================================= */
+
+const pages =
+  document.querySelectorAll(".page");
+
+
+const navItems =
+  document.querySelectorAll("[data-page]");
+
+
+function showPage(pageName) {
+
+  pages.forEach(page => {
+
+    page.classList.remove("active");
+
+  });
+
+
+  const target =
+    document.getElementById(pageName);
+
+
+  if (target) {
+
+    target.classList.add("active");
+
+  }
+
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(button => {
+
+      button.classList.remove("active");
+
     });
+
+
+  document
+    .querySelectorAll(
+      `.nav-item[data-page="${pageName}"]`
+    )
+    .forEach(button => {
+
+      button.classList.add("active");
+
+    });
+
+
+  closeDropdown();
+
+
+  window.scrollTo({
+
+    top: 0,
+
+    behavior: "smooth"
+
+  });
+
+}
+
+
+navItems.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    function () {
+
+      const page =
+        this.dataset.page;
+
+      if (page) {
+
+        showPage(page);
+
+      }
+
+    }
+  );
+
 });
 
-async function initApp() {
-    updateDate();
-    await Promise.all([
-        fetchSettings(),
-        fetchTodayInfo(),
-        fetchTips(),
-        fetchUpdates(),
-        fetchArchive(),
-        fetchPatti()
-    ]);
+
+/* =========================================================
+   DROPDOWN
+   ========================================================= */
+
+const moreBtn =
+  document.getElementById("moreBtn");
+
+
+const moreMenu =
+  document.getElementById("moreMenu");
+
+
+if (moreBtn) {
+
+  moreBtn.addEventListener(
+    "click",
+    function (event) {
+
+      event.stopPropagation();
+
+      const dropdown =
+        this.closest(".dropdown");
+
+      dropdown.classList.toggle("open");
+
+    }
+  );
+
 }
 
-// UI Setup
+
+function closeDropdown() {
+
+  const dropdown =
+    document.querySelector(".dropdown");
+
+  if (dropdown) {
+
+    dropdown.classList.remove("open");
+
+  }
+
+}
+
+
+document.addEventListener(
+  "click",
+  function (event) {
+
+    if (
+      !event.target.closest(".dropdown")
+    ) {
+
+      closeDropdown();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
 function updateDate() {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', options);
+
+  const dateElement =
+    document.getElementById("todayDate");
+
+
+  if (!dateElement) {
+
+    return;
+
+  }
+
+
+  const now =
+    new Date();
+
+
+  dateElement.textContent =
+    now.toLocaleDateString(
+      "en-IN",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
 }
 
-function setupDropdown() {
-    const dropBtn = document.getElementById('moreBtn');
-    const dropdown = document.querySelector('.dropdown');
-    
-    dropBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle('show');
-    });
-    
-    window.addEventListener('click', () => {
-        if (dropdown.classList.contains('show')) dropdown.classList.remove('show');
-    });
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') dropdown.classList.remove('show');
-    });
+
+updateDate();
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+function renderSettings() {
+
+  const settings =
+    siteData.settings;
+
+
+  document.title =
+    settings.siteName;
+
+
+  const ticker =
+    document.getElementById("newsTicker");
+
+
+  if (ticker) {
+
+    ticker.textContent =
+      settings.news;
+
+  }
+
+
+  const footerBio =
+    document.getElementById("footerBio");
+
+
+  if (footerBio) {
+
+    footerBio.textContent =
+      settings.footerBio;
+
+  }
+
+
+  const aboutTitle =
+    document.getElementById("aboutTitle");
+
+
+  if (aboutTitle) {
+
+    aboutTitle.textContent =
+      settings.aboutTitle;
+
+  }
+
+
+  const aboutContent =
+    document.getElementById("aboutContent");
+
+
+  if (aboutContent) {
+
+    aboutContent.textContent =
+      settings.about;
+
+  }
+
+
+  const contactTitle =
+    document.getElementById("contactTitle");
+
+
+  if (contactTitle) {
+
+    contactTitle.textContent =
+      settings.contactTitle;
+
+  }
+
+
+  const contactContent =
+    document.getElementById("contactContent");
+
+
+  if (contactContent) {
+
+    contactContent.textContent =
+      settings.contact;
+
+  }
+
 }
 
-function setupNavigation() {
-    const navBtns = document.querySelectorAll('.nav-btn:not(.dropbtn), .dropdown-content a, .nav-btn-link, .footer-link');
-    const sections = document.querySelectorAll('.page-section');
 
-    navBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = btn.getAttribute('data-target');
-            if(!targetId) return;
+/* =========================================================
+   TODAY
+   ========================================================= */
 
-            // Remove active classes
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            sections.forEach(s => s.classList.remove('active'));
-            
-            // Add active to main nav if it's a top level button
-            if(btn.classList.contains('nav-btn')) btn.classList.add('active');
-            
-            // Show section
-            const targetSection = document.getElementById(targetId);
-            if(targetSection) targetSection.classList.add('active');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    });
-}
+function renderToday() {
 
-// Database Fetching
-async function fetchSettings() {
-    try {
-        const { data } = await supabase.from('settings').select('*');
-        let settings = {};
-        if (data) data.forEach(row => settings[row.key] = row.value);
-        
-        // Settings mappings
-        if(settings.news_ticker_active === 'true') {
-            document.getElementById('newsMarquee').textContent = settings.news_text || 'Welcome to Haryana Bazi';
-        } else {
-            document.getElementById('newsBarContainer').classList.add('hidden');
-        }
-        
-        if(settings.about_text) document.getElementById('aboutDescription').innerHTML = `<p>${settings.about_text}</p>`;
-        
-        let contactHtml = '';
-        if(settings.contact_email) contactHtml += `<p><strong>Email:</strong> ${settings.contact_email}</p>`;
-        if(settings.contact_phone) contactHtml += `<p class="mt-8"><strong>Phone:</strong> ${settings.contact_phone}</p>`;
-        document.getElementById('contactContent').innerHTML = contactHtml || '<p>No contact information provided.</p>';
-        
-    } catch(e) { console.error("Settings load error"); }
-}
+  const today =
+    siteData.today;
 
-async function fetchTodayInfo() {
-    const container = document.getElementById('todayInfoContent');
-    try {
-        const { data } = await supabase.from('daily_information').select('*').order('created_at', { ascending: false }).limit(1);
-        if (data && data.length > 0 && data[0].status === 'active') {
-            container.innerHTML = `<p>${data[0].content}</p>`;
-            document.getElementById('todayInfoTitle').textContent = data[0].title;
-            
-            let date = new Date(data[0].created_at);
-            document.getElementById('todayLastUpdated').textContent = `Last updated: ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-        } else {
-            container.innerHTML = `<div class="empty-state">Today's information has not been updated yet.<br>Please check again later.</div>`;
-            document.getElementById('todayLastUpdated').textContent = '';
-        }
-        container.classList.remove('loading');
-    } catch(e) { 
-        container.innerHTML = `<div class="empty-state">Unable to load information. Please try again.</div>`; 
-    }
-}
 
-async function fetchTips() {
-    try {
-        const { data } = await supabase.from('tips').select('*').eq('active', true).order('created_at', { ascending: false });
-        const container = document.getElementById('tipsContainer');
-        const preview = document.getElementById('homeTipPreview');
-        
-        if (data && data.length > 0) {
-            let html = data.map(tip => `
-                <div class="card">
-                    <h3 style="font-size:1.1rem">${tip.title}</h3>
-                    <p class="text-muted" style="font-size:0.8rem; margin-bottom:8px;">${new Date(tip.created_at).toLocaleDateString()}</p>
-                    <p>${tip.description}</p>
-                </div>
-            `).join('');
-            container.innerHTML = html;
-            preview.innerHTML = `<strong>${data[0].title}</strong><br><span class="text-muted">${data[0].description.substring(0, 50)}...</span>`;
-        } else {
-            container.innerHTML = `<div class="empty-state">No tips available at the moment.</div>`;
-            preview.innerHTML = 'No tips available.';
-        }
-        container.classList.remove('loading');
-        preview.classList.remove('loading');
-    } catch(e) {}
-}
+  const title =
+    document.getElementById("todayTitle");
 
-async function fetchUpdates() {
-    try {
-        const { data } = await supabase.from('updates').select('*').eq('active', true).order('created_at', { ascending: false });
-        const container = document.getElementById('updatesContainer');
-        if (data && data.length > 0) {
-            container.innerHTML = data.map(up => `
-                <div class="card">
-                    <h3 style="font-size:1.1rem">${up.title}</h3>
-                    <p class="text-muted" style="font-size:0.8rem; margin-bottom:8px;">${new Date(up.created_at).toLocaleString()}</p>
-                    <p>${up.description}</p>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = `<div class="empty-state">No new updates available.</div>`;
-        }
-        container.classList.remove('loading');
-    } catch(e) {}
-}
 
-async function fetchArchive() {
-    try {
-        const { data } = await supabase.from('old_information').select('*').order('date', { ascending: false });
-        const container = document.getElementById('archiveContainer');
-        if (data && data.length > 0) {
-            container.innerHTML = data.map(item => `
-                <div class="card">
-                    <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">${item.date}</div>
-                    <h3 style="margin-top:4px;">${item.title}</h3>
-                    <p class="mt-8">${item.information}</p>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = `<div class="empty-state">No previous information available.</div>`;
-        }
-        container.classList.remove('loading');
-    } catch(e) {}
-}
+  const content =
+    document.getElementById("todayContent");
 
-function showPattiTableFallback() {
-    document.getElementById('pattiImageWrapper').classList.add('hidden');
-    document.getElementById('pattiTableContainer').classList.remove('hidden');
-}
 
-async function fetchPatti() {
-    try {
-        const { data } = await supabase.from('patti').select('*').order('id', { ascending: true });
-        const body = document.getElementById('pattiTableBody');
-        if (data && data.length > 0) {
-            body.innerHTML = data.map(row => `
-                <tr>
-                    <td><strong>${row.number}</strong></td>
-                    <td>${row.information}</td>
-                    <td>${row.description || '-'}</td>
-                </tr>
-            `).join('');
-        } else {
-            body.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No records available</td></tr>';
-        }
-    } catch(e) {}
-}
+  const updated =
+    document.getElementById("todayUpdated");
 
-// Features Logic
-function setupLuckyWheel() {
-    const wheel = document.getElementById('spinWheel');
-    let deg = 0;
-    
-    for(let i=0; i<10; i++) {
-        let el = document.createElement('div');
-        el.className = 'wheel-segment';
-        el.style.transform = `rotate(${i*36}deg) skewY(-54deg)`;
-        el.innerHTML = `<span style="transform: skewY(54deg) rotate(18deg) translateY(-100px); display:block;">${i}</span>`;
-        wheel.appendChild(el);
+
+  if (title) {
+
+    title.textContent =
+      today.title ||
+      siteData.settings.todayTitle;
+
+  }
+
+
+  if (content) {
+
+    content.textContent =
+      today.content ||
+      "Today's information has not been updated yet.";
+
+  }
+
+
+  if (updated) {
+
+    if (today.updated) {
+
+      updated.textContent =
+        "Last updated: " +
+        today.updated;
+
     }
 
-    document.getElementById('spinBtn').addEventListener('click', function() {
-        if(localStorage.getItem('bazi_spin_used')) {
-            document.getElementById('spinLimitMsg').classList.remove('hidden');
-            return;
-        }
-        
-        this.disabled = true;
-        document.getElementById('spinResult').classList.add('hidden');
-        
-        let randomNum = Math.floor(Math.random() * 10);
-        let extraSpins = 5;
-        let segmentAngle = 36;
-        let targetAngle = (extraSpins * 360) + (360 - (randomNum * segmentAngle)) - (segmentAngle/2);
-        
-        deg += targetAngle;
-        wheel.style.transform = `rotate(${deg}deg)`;
-        
-        setTimeout(() => {
-            document.getElementById('spinResult').classList.remove('hidden');
-            document.getElementById('resultNumber').textContent = randomNum;
-            localStorage.setItem('bazi_spin_used', 'true');
-        }, 4000);
-    });
-}
+    else {
 
-function setupVoting() {
-    const grid = document.getElementById('votingGrid');
-    let selectedNum = null;
-    
-    grid.innerHTML = '';
-    for(let i=0; i<=9; i++) {
-        let btn = document.createElement('button');
-        btn.className = 'vote-btn';
-        btn.textContent = i;
-        btn.onclick = () => {
-            document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedNum = i;
-            document.getElementById('submitVoteBtn').disabled = false;
-            document.getElementById('voteMessage').classList.add('hidden');
-        };
-        grid.appendChild(btn);
+      updated.textContent = "";
+
     }
 
-    document.getElementById('submitVoteBtn').onclick = async () => {
-        if(selectedNum === null) {
-            document.getElementById('voteMessage').textContent = "Please select a number first.";
-            document.getElementById('voteMessage').classList.remove('hidden');
-            return;
-        }
-        
-        if(localStorage.getItem('bazi_voted_today') === new Date().toDateString()) {
-             document.getElementById('voteMessage').textContent = "You have already voted today.";
-             document.getElementById('voteMessage').classList.remove('hidden');
-             return;
-        }
+  }
 
-        document.getElementById('submitVoteBtn').disabled = true;
-        try {
-            await supabase.from('votes').insert([{ number_voted: selectedNum }]);
-            document.getElementById('voteMessage').textContent = "Vote recorded. Thank you.";
-            document.getElementById('voteMessage').classList.remove('hidden');
-            localStorage.setItem('bazi_voted_today', new Date().toDateString());
-            fetchVotingStats();
-        } catch (e) {
-            document.getElementById('submitVoteBtn').disabled = false;
-        }
-    };
-    fetchVotingStats();
 }
 
-async function fetchVotingStats() {
-    try {
-        const { data } = await supabase.from('votes').select('number_voted');
-        if(data && data.length > 0) {
-            let counts = Array(10).fill(0);
-            data.forEach(v => counts[v.number_voted]++);
-            let total = data.length;
-            
-            document.getElementById('votingStats').classList.remove('hidden');
-            document.getElementById('statsContainer').innerHTML = counts.map((count, index) => {
-                let pct = ((count/total)*100).toFixed(1);
-                return count > 0 ? `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid var(--border-color);"><span>Number ${index}</span> <strong>${count} (${pct}%)</strong></div>` : '';
-            }).join('');
-        }
-    } catch (e) {}
+
+/* =========================================================
+   TIPS
+   ========================================================= */
+
+function renderTips() {
+
+  const list =
+    document.getElementById("tipsList");
+
+
+  const preview =
+    document.getElementById("tipsPreview");
+
+
+  if (!list) {
+
+    return;
+
+  }
+
+
+  const tips =
+    Array.isArray(siteData.tips)
+      ? siteData.tips
+      : [];
+
+
+  if (tips.length === 0) {
+
+    list.innerHTML =
+      emptyMessage(
+        "No tips available right now."
+      );
+
+    if (preview) {
+
+      preview.innerHTML =
+        emptyMessage(
+          "No tips available right now."
+        );
+
+    }
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    tips.map(
+      (tip, index) => {
+
+        return `
+
+          <article class="item-card">
+
+            <div class="meta">
+
+              ${escapeHTML(
+                tip.date || ""
+              )}
+
+            </div>
+
+            <h3>
+
+              ${escapeHTML(
+                tip.title ||
+                `Tip ${index + 1}`
+              )}
+
+            </h3>
+
+            <p>
+
+              ${escapeHTML(
+                tip.description ||
+                ""
+              )}
+
+            </p>
+
+          </article>
+
+        `;
+
+      }
+    ).join("");
+
+
+  if (preview) {
+
+    const first =
+      tips[0];
+
+
+    preview.innerHTML = `
+
+      <div class="item-card">
+
+        <div class="meta">
+
+          ${escapeHTML(
+            first.date || ""
+          )}
+
+        </div>
+
+        <h3>
+
+          ${escapeHTML(
+            first.title ||
+            "Latest Tip"
+          )}
+
+        </h3>
+
+        <p>
+
+          ${escapeHTML(
+            first.description ||
+            ""
+          )}
+
+        </p>
+
+      </div>
+
+    `;
+
+  }
+
 }
+
+
+/* =========================================================
+   UPDATES
+   ========================================================= */
+
+function renderUpdates() {
+
+  const list =
+    document.getElementById("updatesList");
+
+
+  const preview =
+    document.getElementById(
+      "updatesPreview"
+    );
+
+
+  const updates =
+    Array.isArray(siteData.updates)
+      ? siteData.updates
+      : [];
+
+
+  if (list) {
+
+    if (updates.length === 0) {
+
+      list.innerHTML =
+        emptyMessage(
+          "No updates available."
+        );
+
+    }
+
+    else {
+
+      list.innerHTML =
+        updates.map(
+          update => {
+
+            return `
+
+              <article class="item-card">
+
+                <div class="meta">
+
+                  ${escapeHTML(
+                    formatDateTime(
+                      update.date,
+                      update.time
+                    )
+                  )}
+
+                </div>
+
+                <h3>
+
+                  ${escapeHTML(
+                    update.title ||
+                    "Update"
+                  )}
+
+                </h3>
+
+                <p>
+
+                  ${escapeHTML(
+                    update.description ||
+                    ""
+                  )}
+
+                </p>
+
+              </article>
+
+            `;
+
+          }
+        ).join("");
+
+    }
+
+  }
+
+
+  if (preview) {
+
+    if (updates.length === 0) {
+
+      preview.innerHTML =
+        emptyMessage(
+          "No updates available."
+        );
+
+    }
+
+    else {
+
+      const first =
+        updates[0];
+
+
+      preview.innerHTML = `
+
+        <div class="item-card">
+
+          <div class="meta">
+
+            ${escapeHTML(
+              formatDateTime(
+                first.date,
+                first.time
+              )
+            )}
+
+          </div>
+
+          <h3>
+
+            ${escapeHTML(
+              first.title ||
+              "Latest Update"
+            )}
+
+          </h3>
+
+          <p>
+
+            ${escapeHTML(
+              first.description ||
+              ""
+            )}
+
+          </p>
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   OLD INFORMATION
+   ========================================================= */
+
+function renderOld() {
+
+  const list =
+    document.getElementById(
+      "oldList"
+    );
+
+
+  if (!list) {
+
+    return;
+
+  }
+
+
+  const old =
+    Array.isArray(siteData.old)
+      ? siteData.old
+      : [];
+
+
+  if (old.length === 0) {
+
+    list.innerHTML =
+      emptyMessage(
+        "No old information available."
+      );
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    old.map(
+      item => {
+
+        return `
+
+          <article class="item-card">
+
+            <div class="meta">
+
+              ${escapeHTML(
+                item.date || ""
+              )}
+
+            </div>
+
+            <h3>
+
+              ${escapeHTML(
+                item.title ||
+                "Previous Information"
+              )}
+
+            </h3>
+
+            <p>
+
+              ${escapeHTML(
+                item.description ||
+                ""
+              )}
+
+            </p>
+
+          </article>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================================================
+   OLD SEARCH
+   ========================================================= */
+
+const oldSearch =
+  document.getElementById(
+    "oldSearch"
+  );
+
+
+if (oldSearch) {
+
+  oldSearch.addEventListener(
+    "input",
+    function () {
+
+      const query =
+        this.value
+          .trim()
+          .toLowerCase();
+
+
+      const items =
+        document.querySelectorAll(
+          "#oldList .item-card"
+        );
+
+
+      items.forEach(item => {
+
+        const text =
+          item.textContent
+            .toLowerCase();
+
+
+        item.style.display =
+          !query ||
+          text.includes(query)
+            ? ""
+            : "none";
+
+      });
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PATTI
+   ========================================================= */
+
+function renderPatti() {
+
+  const table =
+    document.getElementById(
+      "pattiTable"
+    );
+
+
+  if (!table) {
+
+    return;
+
+  }
+
+
+  const patti =
+    Array.isArray(siteData.patti)
+      ? siteData.patti
+      : [];
+
+
+  table.innerHTML =
+    patti.map(
+      item => {
+
+        return `
+
+          <tr>
+
+            <td>
+
+              ${escapeHTML(
+                item.number || ""
+              )}
+
+            </td>
+
+            <td>
+
+              ${escapeHTML(
+                item.information ||
+                ""
+              )}
+
+            </td>
+
+            <td>
+
+              ${escapeHTML(
+                item.description ||
+                ""
+              )}
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================================================
+   VOTING
+   ========================================================= */
+
+let selectedVote =
+  null;
+
+
+let votes =
+  loadVotes();
+
+
+function loadVotes() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        "haryanaBaziVotes"
+      );
+
+
+    if (saved) {
+
+      const parsed =
+        JSON.parse(saved);
+
+
+      if (
+        Array.isArray(parsed) &&
+        parsed.length === 10
+      ) {
+
+        return parsed;
+
+      }
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+  }
+
+
+  return [
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+  ];
+
+}
+
+
+function saveVotes() {
+
+  localStorage.setItem(
+
+    "haryanaBaziVotes",
+
+    JSON.stringify(votes)
+
+  );
+
+}
+
+
+/* =========================================================
+   CREATE VOTE BUTTONS
+   ========================================================= */
+
+function renderVoteButtons() {
+
+  const grid =
+    document.getElementById(
+      "numberGrid"
+    );
+
+
+  if (!grid) {
+
+    return;
+
+  }
+
+
+  grid.innerHTML = "";
+
+
+  for (
+    let number = 0;
+    number <= 9;
+    number++
+  ) {
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+
+    button.type =
+      "button";
+
+
+    button.className =
+      "number-btn";
+
+
+    button.textContent =
+      number;
+
+
+    button.dataset.number =
+      number;
+
+
+    button.addEventListener(
+      "click",
+      function () {
+
+        selectVote(
+          number,
+          this
+        );
+
+      }
+    );
+
+
+    grid.appendChild(
+      button
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SELECT VOTE
+   ========================================================= */
+
+function selectVote(
+  number,
+  button
+) {
+
+  selectedVote =
+    number;
+
+
+  document
+    .querySelectorAll(
+      ".number-btn"
+    )
+    .forEach(
+      item => {
+
+        item.classList.remove(
+          "selected"
+        );
+
+      }
+    );
+
+
+  button.classList.add(
+    "selected"
+  );
+
+
+  const notice =
+    document.getElementById(
+      "voteNotice"
+    );
+
+
+  if (notice) {
+
+    notice.textContent =
+      `Selected number: ${number}`;
+
+  }
+
+}
+
+
+/* =========================================================
+   CONFIRM VOTE
+   ========================================================= */
+
+const voteBtn =
+  document.getElementById(
+    "voteBtn"
+  );
+
+
+if (voteBtn) {
+
+  voteBtn.addEventListener(
+    "click",
+    function () {
+
+      const notice =
+        document.getElementById(
+          "voteNotice"
+        );
+
+
+      if (
+        selectedVote === null
+      ) {
+
+        if (notice) {
+
+          notice.textContent =
+            "Please select a number first.";
+
+        }
+
+        return;
+
+      }
+
+
+      votes[selectedVote]++;
+
+
+      saveVotes();
+
+
+      if (notice) {
+
+        notice.textContent =
+          "Your vote has been recorded.";
+
+      }
+
+
+      renderVoteResults();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   VOTE RESULTS
+   ========================================================= */
+
+function renderVoteResults() {
+
+  const tbody =
+    document.getElementById(
+      "voteResults"
+    );
+
+
+  if (!tbody) {
+
+    return;
+
+  }
+
+
+  const total =
+    votes.reduce(
+      (sum, value) =>
+        sum + value,
+      0
+    );
+
+
+  tbody.innerHTML = "";
+
+
+  for (
+    let number = 0;
+    number <= 9;
+    number++
+  ) {
+
+    const count =
+      votes[number] || 0;
+
+
+    const percentage =
+      total === 0
+        ? 0
+        : (
+            count /
+            total *
+            100
+          ).toFixed(1);
+
+
+    const row =
+      document.createElement(
+        "tr"
+      );
+
+
+    row.innerHTML = `
+
+      <td>
+        ${number}
+      </td>
+
+      <td>
+        ${count}
+      </td>
+
+      <td>
+        ${percentage}%
+      </td>
+
+    `;
+
+
+    tbody.appendChild(
+      row
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LUCKY WHEEL
+   ========================================================= */
+
+let wheelRotation =
+  0;
+
+
+let spinInProgress =
+  false;
+
+
+const wheel =
+  document.getElementById(
+    "wheel"
+  );
+
+
+const spinBtn =
+  document.getElementById(
+    "spinBtn"
+  );
+
+
+const spinResult =
+  document.getElementById(
+    "spinResult"
+  );
+
+
+if (spinBtn) {
+
+  spinBtn.addEventListener(
+    "click",
+    spinWheel
+  );
+
+}
+
+
+function spinWheel() {
+
+  if (
+    spinInProgress
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !wheel
+  ) {
+
+    return;
+
+  }
+
+
+  spinInProgress =
+    true;
+
+
+  spinBtn.disabled =
+    true;
+
+
+  if (spinResult) {
+
+    spinResult.textContent =
+      "";
+
+  }
+
+
+  const result =
+    Math.floor(
+      Math.random() * 10
+    );
+
+
+  const segment =
+    36;
+
+
+  const extraTurns =
+    5 +
+    Math.floor(
+      Math.random() * 3
+    );
+
+
+  const targetRotation =
+    extraTurns * 360 +
+    (
+      360 -
+      result * segment
+    );
+
+
+  wheelRotation +=
+    targetRotation;
+
+
+  wheel.style.transform =
+    `rotate(${wheelRotation}deg)`;
+
+
+  setTimeout(
+    function () {
+
+      if (spinResult) {
+
+        spinResult.textContent =
+          `Lucky Number: ${result}`;
+
+      }
+
+
+      spinInProgress =
+        false;
+
+
+      spinBtn.disabled =
+        false;
+
+    },
+    4300
+  );
+
+}
+
+
+/* =========================================================
+   REFRESH
+   ========================================================= */
+
+const refreshBtn =
+  document.getElementById(
+    "refreshBtn"
+  );
+
+
+if (refreshBtn) {
+
+  refreshBtn.addEventListener(
+    "click",
+    function () {
+
+      window.location.reload();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   UTILITY FUNCTIONS
+   ========================================================= */
+
+function escapeHTML(value) {
+
+  if (
+    value === null ||
