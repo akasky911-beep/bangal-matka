@@ -1,182 +1,825 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haryana Bazi | Information & Updates</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Haryana Bazi</title>
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <!-- HEADER -->
-    <header class="main-header">
-        <div class="header-banner">
-            <!-- Existing banner image -->
-            <img src="banner.png" alt="Haryana Bazi Banner" onerror="this.style.display='none'">
-        </div>
-        <div class="header-brand-row">
-            <div class="brand-title">HARYANA BAZI</div>
-            <div class="header-actions">
-                <span class="live-indicator"><span class="dot"></span> LIVE</span>
-                <button id="refreshBtn" class="icon-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
-            </div>
-        </div>
-    </header>
+  <!-- ================= HEADER ================= -->
 
-    <!-- SCROLLING NEWS -->
-    <div class="news-bar" id="newsBarContainer">
-        <marquee id="newsMarquee" behavior="scroll" direction="left">Loading latest updates...</marquee>
+  <header class="site-header">
+
+    <!-- Banner -->
+    <div class="banner">
+      <img
+        src="assets/banner.png"
+        alt="Haryana Bazi"
+      >
     </div>
 
-    <!-- MAIN NAVIGATION -->
-    <nav class="main-nav">
-        <button class="nav-btn active" data-target="home">HOME</button>
-        <button class="nav-btn" data-target="tips">TIPS</button>
-        <button class="nav-btn" data-target="updates">UPDATES</button>
-        
-        <!-- Dropdown -->
-        <div class="dropdown">
-            <button class="nav-btn dropbtn" id="moreBtn">MORE ▼</button>
-            <div class="dropdown-content" id="moreDropdown">
-                <a href="#" data-target="wheel">Lucky Number</a>
-                <a href="#" data-target="voting">Voting</a>
-                <a href="#" data-target="archive">Old Information</a>
-                <a href="#" data-target="patti">Patti</a>
-                <a href="#" data-target="about">About</a>
-                <a href="#" data-target="contact">Contact</a>
-            </div>
+    <!-- Live + Refresh -->
+    <div class="livebar container">
+
+      <div class="live">
+        <span class="live-dot"></span>
+        LIVE
+      </div>
+
+      <button
+        class="ghost-btn"
+        id="refreshBtn"
+      >
+        Refresh
+      </button>
+
+    </div>
+
+    <!-- Scrolling News -->
+    <div class="ticker">
+
+      <div id="newsTicker">
+        Welcome to Haryana Bazi • Daily Updates
+      </div>
+
+    </div>
+
+
+    <!-- ================= NAVIGATION ================= -->
+
+    <nav class="nav container">
+
+      <button
+        class="nav-item active"
+        data-page="home"
+      >
+        Home
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="tips"
+      >
+        Tips
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="updates"
+      >
+        Updates
+      </button>
+
+
+      <!-- MORE DROPDOWN -->
+
+      <div class="dropdown">
+
+        <button
+          class="nav-item"
+          id="moreBtn"
+        >
+          More <span>⌄</span>
+        </button>
+
+
+        <div
+          class="dropdown-menu"
+          id="moreMenu"
+        >
+
+          <button data-page="lucky">
+            Lucky Number
+          </button>
+
+          <button data-page="voting">
+            Voting
+          </button>
+
+          <button data-page="old">
+            Old Information
+          </button>
+
+          <button data-page="patti">
+            Patti
+          </button>
+
+          <button data-page="about">
+            About
+          </button>
+
+          <button data-page="contact">
+            Contact
+          </button>
+
         </div>
+
+      </div>
+
     </nav>
 
-    <!-- CONTENT AREA -->
-    <main class="content-container">
-        
-        <!-- HOME SECTION -->
-        <section id="home" class="page-section active">
-            <div class="card date-card">
-                <i class="far fa-calendar-alt"></i>
-                <span id="currentDate"></span>
-            </div>
-            
-            <div class="card info-card" id="todayInfoCard">
-                <h2 id="todayInfoTitle">TODAY'S INFORMATION</h2>
-                <div id="todayInfoContent" class="content-state loading">Loading information...</div>
-                <div class="last-updated" id="todayLastUpdated"></div>
-            </div>
+  </header>
 
-            <div class="preview-section mt-24">
-                <div class="card">
-                    <h3>Latest Tip</h3>
-                    <div id="homeTipPreview" class="loading">Loading...</div>
-                    <button class="nav-btn-link mt-16" data-target="tips">VIEW ALL TIPS &rarr;</button>
-                </div>
-            </div>
-        </section>
 
-        <!-- TIPS SECTION -->
-        <section id="tips" class="page-section">
-            <h2 class="section-title">Tips</h2>
-            <div id="tipsContainer" class="list-container loading">Loading tips...</div>
-        </section>
 
-        <!-- UPDATES SECTION -->
-        <section id="updates" class="page-section">
-            <h2 class="section-title">Updates</h2>
-            <div id="updatesContainer" class="list-container loading">Loading updates...</div>
-        </section>
+  <!-- ================= MAIN ================= -->
 
-        <!-- LUCKY NUMBER -->
-        <section id="wheel" class="page-section text-center">
-            <h2 class="section-title">LUCKY NUMBER</h2>
-            <p class="subtitle text-muted">Entertainment Feature</p>
-            
-            <div class="wheel-container mt-24">
-                <div class="wheel-pointer">▼</div>
-                <div class="wheel" id="spinWheel"></div>
-            </div>
-            
-            <button id="spinBtn" class="primary-btn mt-24">SPIN</button>
-            <p id="spinLimitMsg" class="text-muted mt-12 hidden">You have already used your spin.</p>
-            
-            <div id="spinResult" class="result-display hidden mt-24">
-                <h3>YOUR LUCKY NUMBER</h3>
-                <div class="number-circle" id="resultNumber">-</div>
-            </div>
-        </section>
+  <main class="container main">
 
-        <!-- VOTING SECTION -->
-        <section id="voting" class="page-section">
-            <h2 class="section-title">VOTING</h2>
-            <div class="voting-grid mt-24" id="votingGrid"></div>
-            
-            <button id="submitVoteBtn" class="primary-btn mt-24" disabled>VOTE CONFIRM</button>
-            <div id="voteMessage" class="message hidden mt-12"></div>
-            
-            <div id="votingStats" class="mt-24 hidden card">
-                <h3>Results</h3>
-                <div id="statsContainer"></div>
-            </div>
-        </section>
 
-        <!-- OLD INFORMATION -->
-        <section id="archive" class="page-section">
-            <h2 class="section-title">OLD INFORMATION</h2>
-            <div class="search-box mt-16">
-                <input type="text" id="archiveSearch" placeholder="Search records...">
-            </div>
-            <div id="archiveContainer" class="list-container mt-20 loading">Loading old records...</div>
-        </section>
+    <!-- ================= HOME ================= -->
 
-        <!-- PATTI SECTION -->
-        <section id="patti" class="page-section">
-            <h2 class="section-title">PATTI INFORMATION</h2>
-            
-            <div class="patti-image-container mt-16" id="pattiImageWrapper">
-                <img src="patti.png" id="pattiImg" alt="Patti Image" onerror="showPattiTableFallback()">
-            </div>
-            
-            <div id="pattiTableContainer" class="table-container mt-20 hidden">
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Number</th><th>Information</th><th>Description</th></tr>
-                    </thead>
-                    <tbody id="pattiTableBody"></tbody>
-                </table>
-            </div>
-        </section>
+    <section
+      class="page active"
+      id="home"
+    >
 
-        <!-- ABOUT SECTION -->
-        <section id="about" class="page-section">
-            <div class="card">
-                <h2 id="aboutHeading">ABOUT HARYANA BAZI</h2>
-                <div id="aboutDescription" class="mt-16 loading">Loading...</div>
-            </div>
-        </section>
+      <div
+        class="date"
+        id="todayDate"
+      ></div>
 
-        <!-- CONTACT SECTION -->
-        <section id="contact" class="page-section">
-            <div class="card" id="contactInfoCard">
-                <h2 id="contactHeading">CONTACT</h2>
-                <div id="contactContent" class="mt-16 loading">Loading...</div>
-            </div>
-        </section>
 
-    </main>
+      <!-- TODAY RESULT -->
 
-    <!-- FOOTER -->
-    <footer class="main-footer">
-        <h3>HARYANA BAZI</h3>
-        <p id="footerBio" class="mt-8">Haryana Bazi is a simple, mobile-friendly platform providing daily information, updates and entertainment features.</p>
-        <div class="footer-links mt-16">
-            <span class="footer-link" data-target="home">Home</span> | 
-            <span class="footer-link" data-target="tips">Tips</span> | 
-            <span class="footer-link" data-target="about">About</span>
+      <article class="card hero-card">
+
+        <div class="eyebrow">
+          TODAY
         </div>
-        <p class="copyright mt-16">&copy; 2026 Haryana Bazi</p>
-    </footer>
 
-    <script src="script.js"></script>
+
+        <h1 id="todayTitle">
+          Today's Information
+        </h1>
+
+
+        <div
+          id="todayContent"
+          class="content-area loading"
+        >
+          Loading...
+        </div>
+
+
+        <div
+          class="updated"
+          id="todayUpdated"
+        ></div>
+
+      </article>
+
+
+
+      <!-- TIPS + UPDATES -->
+
+      <div class="grid-2">
+
+
+        <!-- Tips -->
+
+        <article class="card">
+
+          <div class="section-head">
+
+            <h2>
+              Tips
+            </h2>
+
+
+            <button
+              class="text-btn"
+              data-page="tips"
+            >
+              View all →
+            </button>
+
+          </div>
+
+
+          <div
+            id="tipsPreview"
+            class="loading"
+          >
+            Loading...
+          </div>
+
+        </article>
+
+
+
+        <!-- Updates -->
+
+        <article class="card">
+
+          <div class="section-head">
+
+            <h2>
+              Latest Updates
+            </h2>
+
+
+            <button
+              class="text-btn"
+              data-page="updates"
+            >
+              View all →
+            </button>
+
+          </div>
+
+
+          <div
+            id="updatesPreview"
+            class="loading"
+          >
+            Loading...
+          </div>
+
+        </article>
+
+      </div>
+
+
+
+      <!-- FEATURE BUTTONS -->
+
+      <div class="feature-grid">
+
+
+        <button
+          class="feature-card"
+          data-page="lucky"
+        >
+
+          <strong>
+            Lucky Number
+          </strong>
+
+          <span>
+            Spin the number wheel
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="feature-card"
+          data-page="voting"
+        >
+
+          <strong>
+            Voting
+          </strong>
+
+          <span>
+            Select a number from 0–9
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="feature-card"
+          data-page="patti"
+        >
+
+          <strong>
+            Patti
+          </strong>
+
+          <span>
+            View reference information
+          </span>
+
+        </button>
+
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= TIPS ================= -->
+
+    <section
+      class="page"
+      id="tips"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            INFORMATION
+          </div>
+
+          <h1>
+            Tips
+          </h1>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="tipsList"
+        class="stack"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ================= UPDATES ================= -->
+
+    <section
+      class="page"
+      id="updates"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            LATEST
+          </div>
+
+          <h1>
+            Updates
+          </h1>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="updatesList"
+        class="stack"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ================= LUCKY NUMBER ================= -->
+
+    <section
+      class="page"
+      id="lucky"
+    >
+
+      <div class="page-title center">
+
+        <div>
+
+          <div class="eyebrow">
+            ENTERTAINMENT
+          </div>
+
+          <h1>
+            Lucky Number
+          </h1>
+
+          <p>
+            Random number feature
+          </p>
+
+        </div>
+
+      </div>
+
+
+
+      <article class="card wheel-card">
+
+
+        <!-- Pointer -->
+
+        <div class="pointer">
+          ▼
+        </div>
+
+
+        <!-- Wheel -->
+
+        <div
+          class="wheel"
+          id="wheel"
+        >
+
+          <span>0</span>
+          <span>1</span>
+          <span>2</span>
+          <span>3</span>
+          <span>4</span>
+
+          <span>5</span>
+          <span>6</span>
+          <span>7</span>
+          <span>8</span>
+          <span>9</span>
+
+
+          <div class="wheel-center">
+            HB
+          </div>
+
+        </div>
+
+
+        <!-- Spin Button -->
+
+        <button
+          class="primary-btn spin-btn"
+          id="spinBtn"
+        >
+          SPIN
+        </button>
+
+
+        <!-- Result -->
+
+        <div
+          class="spin-result"
+          id="spinResult"
+        ></div>
+
+      </article>
+
+    </section>
+
+
+
+    <!-- ================= VOTING ================= -->
+
+    <section
+      class="page"
+      id="voting"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            COMMUNITY
+          </div>
+
+          <h1>
+            Voting
+          </h1>
+
+          <p>
+            Select one number from 0 to 9.
+          </p>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Number selection -->
+
+      <article class="card">
+
+        <div
+          class="number-grid"
+          id="numberGrid"
+        ></div>
+
+
+        <button
+          class="primary-btn"
+          id="voteBtn"
+        >
+          Vote Confirm
+        </button>
+
+
+        <div
+          class="notice"
+          id="voteNotice"
+        ></div>
+
+      </article>
+
+
+
+      <!-- Vote results -->
+
+      <article class="card">
+
+        <h2>
+          Vote Results
+        </h2>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Number
+                </th>
+
+                <th>
+                  Votes
+                </th>
+
+                <th>
+                  Percentage
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="voteResults"
+            ></tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+
+    <!-- ================= OLD ================= -->
+
+    <section
+      class="page"
+      id="old"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            ARCHIVE
+          </div>
+
+          <h1>
+            Old Information
+          </h1>
+
+        </div>
+
+      </div>
+
+
+
+      <article class="card">
+
+
+        <input
+          class="search"
+          id="oldSearch"
+          placeholder="Search old information..."
+        >
+
+
+        <div
+          id="oldList"
+          class="stack"
+        ></div>
+
+      </article>
+
+    </section>
+
+
+
+    <!-- ================= PATTI ================= -->
+
+    <section
+      class="page"
+      id="patti"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            REFERENCE
+          </div>
+
+          <h1>
+            Patti Information
+          </h1>
+
+        </div>
+
+      </div>
+
+
+
+      <article class="card">
+
+
+        <!-- Optional Patti image -->
+
+        <img
+          id="pattiImage"
+          class="content-image"
+          src="assets/patti.png"
+          alt="Patti Information"
+          hidden
+        >
+
+
+        <!-- Patti table -->
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Number
+                </th>
+
+                <th>
+                  Information
+                </th>
+
+                <th>
+                  Description
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="pattiTable"
+            ></tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <section
+      class="page"
+      id="about"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            ABOUT
+          </div>
+
+          <h1 id="aboutTitle">
+            About Haryana Bazi
+          </h1>
+
+        </div>
+
+      </div>
+
+
+      <article
+        class="card content-area"
+        id="aboutContent"
+      ></article>
+
+    </section>
+
+
+
+    <!-- ================= CONTACT ================= -->
+
+    <section
+      class="page"
+      id="contact"
+    >
+
+      <div class="page-title">
+
+        <div>
+
+          <div class="eyebrow">
+            CONTACT
+          </div>
+
+          <h1 id="contactTitle">
+            Contact Us
+          </h1>
+
+        </div>
+
+      </div>
+
+
+      <article
+        class="card content-area"
+        id="contactContent"
+      ></article>
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer class="footer">
+
+    <div class="container">
+
+      <strong>
+        Haryana Bazi
+      </strong>
+
+
+      <p id="footerBio">
+        Simple, mobile-friendly information
+        and entertainment features.
+      </p>
+
+
+      <div class="footer-links">
+
+        <button data-page="home">
+          Home
+        </button>
+
+        <button data-page="tips">
+          Tips
+        </button>
+
+        <button data-page="updates">
+          Updates
+        </button>
+
+        <button data-page="about">
+          About
+        </button>
+
+        <button data-page="contact">
+          Contact
+        </button>
+
+      </div>
+
+
+      <small id="copyright">
+        © 2026 Haryana Bazi
+      </small>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- ================= JAVASCRIPT ================= -->
+
+  <script src="js/data.js"></script>
+
+  <script src="js/script.js"></script>
+
 </body>
 </html>
