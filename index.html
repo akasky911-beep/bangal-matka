@@ -3,330 +3,860 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BANGAL MATKA</title>
+
+<title>Haryana Bazi</title>
 
 <style>
 *{
-  box-sizing:border-box;
   margin:0;
   padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#f4f7f8;
+  --surface:#ffffff;
+  --surface-soft:#f8fafb;
+
+  --primary:#527f86;
+  --primary-soft:#e8f0f1;
+  --primary-fade:#dfeaec;
+
+  --text:#26353a;
+  --text-soft:#647378;
+  --muted:#8b989c;
+
+  --border:#e5ebed;
+
+  --shadow:0 8px 30px rgba(45,70,76,.055);
+  --radius:18px;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f6f7f9;
-  color:#111827;
+  min-height:100vh;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(117,153,159,.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 20%,
+      rgba(190,211,214,.14),
+      transparent 30%
+    ),
+    var(--bg);
+
+  color:var(--text);
 }
 
+/* ================================
+   HEADER
+================================ */
+
 header{
-  background:#ffffff;
-  border-bottom:1px solid #e5e7eb;
   position:sticky;
   top:0;
-  z-index:100;
+  z-index:1000;
+
+  background:rgba(255,255,255,.90);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  border-bottom:1px solid rgba(210,220,223,.65);
 }
+
+/* ================================
+   BANNER
+================================ */
 
 .banner{
   width:100%;
-  background:#fff;
+  overflow:hidden;
+  background:#eef3f4;
 }
 
 .banner img{
-  width:100%;
-  max-height:220px;
-  object-fit:cover;
   display:block;
+  width:100%;
+  max-height:230px;
+  object-fit:cover;
+
+  transition:
+    transform .8s ease,
+    filter .8s ease;
+
+  filter:saturate(.88);
 }
 
+.banner:hover img{
+  transform:scale(1.012);
+}
+
+/* ================================
+   TOP BAR
+================================ */
+
 .topbar{
-  padding:8px 12px;
+  max-width:1100px;
+  margin:auto;
+
+  min-height:52px;
+
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:10px;
+  justify-content:space-between;
+
+  padding:8px 15px;
+}
+
+.brand-mini{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.brand-logo{
+  width:32px;
+  height:32px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:10px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #6f979d,
+      #557e84
+    );
+
+  color:white;
+
+  font-weight:800;
+  font-size:14px;
+
+  box-shadow:
+    0 5px 15px rgba(80,120,127,.16);
+}
+
+.brand-name{
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.2px;
 }
 
 .live{
-  font-size:13px;
-  font-weight:bold;
-  color:#dc2626;
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  color:#718084;
+  font-size:11px;
+  font-weight:700;
 }
 
 .live-dot{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  background:#ef4444;
+  width:7px;
+  height:7px;
   border-radius:50%;
-  margin-right:5px;
-  animation:blink 1s infinite;
+
+  background:#7da4a9;
+
+  animation:
+    softPulse 1.8s ease-in-out infinite;
 }
 
-@keyframes blink{
-  50%{opacity:.2}
+@keyframes softPulse{
+  50%{
+    opacity:.35;
+    transform:scale(.78);
+  }
 }
 
 .refresh{
-  border:1px solid #ddd;
-  background:#fff;
-  border-radius:7px;
-  padding:7px 12px;
+  border:1px solid var(--border);
+
+  background:var(--surface);
+
+  color:var(--text-soft);
+
+  border-radius:10px;
+
+  padding:8px 12px;
+
+  font-size:11px;
+  font-weight:700;
+
   cursor:pointer;
+
+  transition:.2s;
 }
 
+.refresh:hover{
+  background:var(--primary-soft);
+  color:var(--primary);
+}
+
+/* ================================
+   NEWS
+================================ */
+
 .news-wrap{
+  width:100%;
+
   overflow:hidden;
   white-space:nowrap;
-  background:#111827;
-  color:#fff;
+
+  background:
+    linear-gradient(
+      90deg,
+      #eaf1f2,
+      #f2f6f7
+    );
+
+  border-top:1px solid rgba(210,220,223,.45);
+  border-bottom:1px solid rgba(210,220,223,.55);
 }
 
 .news{
   display:inline-block;
+
   padding:9px 0;
   padding-left:100%;
-  animation:moveNews 18s linear infinite;
+
+  color:#627276;
+
+  font-size:11px;
+  font-weight:600;
+
+  letter-spacing:.15px;
+
+  animation:
+    moveNews 25s linear infinite;
 }
 
 @keyframes moveNews{
-  from{transform:translateX(0)}
-  to{transform:translateX(-100%)}
+  from{
+    transform:translateX(0);
+  }
+
+  to{
+    transform:translateX(-100%);
+  }
 }
 
+/* ================================
+   NAVIGATION
+================================ */
+
 nav{
+  max-width:1100px;
+  margin:auto;
+
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:5px;
-  padding:8px;
-  background:#fff;
+  grid-template-columns:repeat(4,1fr);
+
+  gap:7px;
+
+  padding:9px 12px;
+
+  background:rgba(255,255,255,.75);
 }
 
 nav button{
-  border:1px solid #ddd;
-  background:#f8fafc;
-  border-radius:7px;
-  padding:10px 4px;
-  font-weight:bold;
+  min-height:40px;
+
+  border:1px solid transparent;
+
+  background:transparent;
+
+  border-radius:11px;
+
+  color:#6c7b80;
+
+  font-size:11px;
+  font-weight:750;
+
   cursor:pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    transform .2s ease;
+}
+
+nav button:hover{
+  background:var(--primary-soft);
+  color:var(--primary);
 }
 
 nav button.active{
-  background:#111827;
-  color:#fff;
+  background:#e5eef0;
+  color:#4f747b;
+
+  border-color:#d8e4e6;
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.8);
 }
 
+nav button:active{
+  transform:scale(.97);
+}
+
+/* ================================
+   MAIN
+================================ */
+
 main{
+  width:100%;
   max-width:900px;
+
   margin:auto;
-  padding:12px;
+
+  padding:
+    18px 13px
+    45px;
 }
 
 .page{
   display:none;
+
+  animation:
+    pageIn .35s ease;
 }
 
 .page.active{
   display:block;
 }
 
+@keyframes pageIn{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* ================================
+   CARD
+================================ */
+
 .card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:15px;
+  position:relative;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.98),
+      rgba(250,252,252,.96)
+    );
+
+  border:1px solid var(--border);
+
+  border-radius:var(--radius);
+
+  padding:18px;
+
   margin-bottom:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,.04);
+
+  box-shadow:var(--shadow);
+}
+
+.card::before{
+  content:"";
+
+  position:absolute;
+
+  left:18px;
+  right:18px;
+  top:0;
+
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(112,148,154,.18),
+      transparent
+    );
+}
+
+.card-title{
+  display:flex;
+  align-items:center;
+  gap:11px;
+
+  margin-bottom:15px;
+}
+
+.card-icon{
+  width:37px;
+  height:37px;
+
+  flex:none;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:11px;
+
+  background:var(--primary-soft);
+
+  color:var(--primary);
+
+  font-size:16px;
+}
+
+.card-title h2{
+  font-size:16px;
+  font-weight:800;
+
+  letter-spacing:-.2px;
+}
+
+.card-title p{
+  margin-top:3px;
+
+  color:var(--muted);
+
+  font-size:10px;
+}
+
+/* ================================
+   DATE
+================================ */
+
+.date-box{
+  padding:13px;
+
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f2f7f8,
+      #f8fafb
+    );
+
+  border:1px solid #e4ecee;
+
+  margin-bottom:15px;
+
+  text-align:center;
+}
+
+.date-label{
+  color:#91a0a4;
+
+  font-size:9px;
+  font-weight:700;
+
+  letter-spacing:1px;
+
+  text-transform:uppercase;
+
+  margin-bottom:5px;
 }
 
 .date{
-  text-align:center;
-  font-weight:bold;
-  margin-bottom:10px;
+  color:#516a70;
+
+  font-size:17px;
+  font-weight:800;
 }
 
-.result-title{
-  text-align:center;
-  margin-bottom:10px;
+/* ================================
+   STATUS
+================================ */
+
+.status-title{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:7px;
+
+  margin-bottom:14px;
+
+  color:#50696e;
+
+  font-size:15px;
+  font-weight:800;
 }
 
-.result-title span{
-  display:inline-flex;
-  width:9px;
-  height:9px;
+.status-dot{
+  width:7px;
+  height:7px;
+
   border-radius:50%;
-  background:#ef4444;
-  margin-left:5px;
-  animation:blink 1s infinite;
+
+  background:#7ba1a6;
+
+  animation:softPulse 1.8s infinite;
+}
+
+/* ================================
+   INFO MESSAGE
+================================ */
+
+.info-message{
+  padding:18px;
+
+  border-radius:14px;
+
+  text-align:center;
+
+  background:#f5f8f8;
+
+  border:1px solid #e6edef;
+
+  color:#708084;
+
+  font-size:12px;
+
+  line-height:1.7;
+}
+
+/* ================================
+   TABLE
+================================ */
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+
+  border-radius:12px;
+
+  border:1px solid var(--border);
 }
 
 table{
   width:100%;
+  min-width:420px;
+
   border-collapse:collapse;
 }
 
-th,td{
-  border:1px solid #ddd;
+th,
+td{
+  padding:11px 8px;
+
+  border-bottom:1px solid var(--border);
+
   text-align:center;
-  padding:9px 4px;
-  font-weight:bold;
+
+  font-size:11px;
 }
 
 th{
-  background:#111827;
-  color:white;
+  background:#f0f5f6;
+
+  color:#5e7479;
+
+  font-weight:800;
 }
 
-.tip-message{
+td{
+  color:#68787c;
+}
+
+tr:last-child td{
+  border-bottom:0;
+}
+
+/* ================================
+   TIP
+================================ */
+
+.tip-box{
+  padding:18px;
+
+  border-radius:15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f1f6f7,
+      #f8fafb
+    );
+
+  border:1px solid #e0eaec;
+
+  color:#64767b;
+
   text-align:center;
-  padding:20px;
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  border-radius:8px;
-  font-weight:bold;
+
+  font-size:13px;
+
+  line-height:1.7;
 }
 
-.vote-grid{
+.tip-label{
+  display:inline-block;
+
+  margin-bottom:9px;
+
+  padding:5px 9px;
+
+  border-radius:20px;
+
+  background:#e3edef;
+
+  color:#5d7c82;
+
+  font-size:9px;
+  font-weight:800;
+
+  letter-spacing:.5px;
+}
+
+/* ================================
+   ABOUT / CONTACT
+================================ */
+
+.about-text{
+  color:#68777b;
+
+  font-size:13px;
+
+  line-height:1.8;
+}
+
+.contact-list{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
   gap:10px;
-  margin:15px 0;
 }
 
-.vote-number{
-  aspect-ratio:1;
-  border-radius:50%;
-  border:2px solid #d1d5db;
-  background:#fff;
-  font-size:22px;
-  font-weight:bold;
-  cursor:pointer;
+.contact-item{
+  display:flex;
+  align-items:center;
+  gap:11px;
+
+  padding:13px;
+
+  background:#f7f9fa;
+
+  border:1px solid #e8edef;
+
+  border-radius:13px;
 }
 
-.vote-number.selected{
-  background:#111827;
-  color:white;
-  border-color:#111827;
+.contact-icon{
+  width:34px;
+  height:34px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:10px;
+
+  background:#e5eef0;
+
+  color:#5b7e84;
 }
+
+.contact-item strong{
+  display:block;
+
+  color:#53666b;
+
+  font-size:12px;
+}
+
+.contact-item span{
+  display:block;
+
+  color:#89969a;
+
+  font-size:11px;
+
+  margin-top:2px;
+}
+
+/* ================================
+   BUTTON
+================================ */
 
 .action{
   width:100%;
-  padding:12px;
+
+  min-height:46px;
+
+  border:1px solid #dce7e9;
+
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #688e94,
+      #557d83
+    );
+
+  color:white;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 7px 18px rgba(83,124,131,.13);
+
+  transition:.2s;
+}
+
+.action:hover{
+  transform:translateY(-1px);
+
+  box-shadow:
+    0 10px 23px rgba(83,124,131,.18);
+}
+
+.action:active{
+  transform:scale(.985);
+}
+
+/* ================================
+   FOOTER
+================================ */
+
+footer{
+  padding:30px 15px 40px;
+
+  text-align:center;
+
+  border-top:1px solid #e6ecee;
+
+  color:#8c999c;
+
+  font-size:10px;
+
+  background:rgba(255,255,255,.5);
+}
+
+.footer-brand{
+  color:#60777c;
+
+  font-size:13px;
+  font-weight:800;
+
+  margin-bottom:6px;
+}
+
+.footer-links{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+
+  margin-top:12px;
+}
+
+.footer-links button{
   border:0;
-  border-radius:8px;
-  background:#111827;
-  color:#fff;
-  font-weight:bold;
+  background:none;
+
+  color:#879497;
+
+  font-size:10px;
+
   cursor:pointer;
 }
 
-.vote-note{
-  text-align:center;
-  margin-top:10px;
-  color:#666;
-  font-size:13px;
+/* ================================
+   DESKTOP
+================================ */
+
+@media(min-width:700px){
+
+  .banner img{
+    max-height:280px;
+  }
+
+  .topbar{
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  nav{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  main{
+    padding-top:24px;
+  }
+
+  .card{
+    padding:22px;
+  }
 }
 
-.wheel-box{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  padding:15px;
-}
-
-.wheel{
-  width:250px;
-  height:250px;
-  border-radius:50%;
-  border:8px solid #111827;
-  position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:conic-gradient(
-    #fff 0deg 36deg,
-    #e5e7eb 36deg 72deg,
-    #fff 72deg 108deg,
-    #e5e7eb 108deg 144deg,
-    #fff 144deg 180deg,
-    #e5e7eb 180deg 216deg,
-    #fff 216deg 252deg,
-    #e5e7eb 252deg 288deg,
-    #fff 288deg 324deg,
-    #e5e7eb 324deg 360deg
-  );
-  transition:transform 4s cubic-bezier(.12,.75,.15,1);
-}
-
-.wheel-number{
-  position:absolute;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.wheel-number:nth-child(1){transform:translateY(-100px)}
-.wheel-number:nth-child(2){transform:translate(59px,-80px)}
-.wheel-number:nth-child(3){transform:translate(95px,-30px)}
-.wheel-number:nth-child(4){transform:translate(95px,30px)}
-.wheel-number:nth-child(5){transform:translate(59px,80px)}
-.wheel-number:nth-child(6){transform:translateY(100px)}
-.wheel-number:nth-child(7){transform:translate(-59px,80px)}
-.wheel-number:nth-child(8){transform:translate(-95px,30px)}
-.wheel-number:nth-child(9){transform:translate(-95px,-30px)}
-.wheel-number:nth-child(10){transform:translate(-59px,-80px)}
-
-.pointer{
-  margin-bottom:-5px;
-  font-size:28px;
-  z-index:2;
-}
-
-.spin-btn{
-  margin-top:20px;
-  width:180px;
-}
-
-.big-result{
-  display:none;
-  text-align:center;
-  font-size:42px;
-  font-weight:bold;
-  margin:20px 0;
-  animation:pop .7s ease;
-}
-
-@keyframes pop{
-  0%{transform:scale(.2);opacity:0}
-  70%{transform:scale(1.2)}
-  100%{transform:scale(1);opacity:1}
-}
-
-.patti-image{
-  width:100%;
-  display:block;
-  border-radius:8px;
-}
-
-.old-month{
-  margin-bottom:12px;
-}
-
-.old-month h3{
-  margin-bottom:7px;
-}
-
-footer{
-  text-align:center;
-  padding:25px;
-  color:#777;
-  font-size:13px;
-}
+/* ================================
+   MOBILE
+================================ */
 
 @media(max-width:500px){
-  .banner img{max-height:170px}
-  nav button{font-size:11px}
-  th,td{font-size:12px}
-  .wheel{width:220px;height:220px}
+
+  .banner img{
+    max-height:170px;
+  }
+
+  .brand-name{
+    font-size:13px;
+  }
+
+  nav{
+    gap:5px;
+    padding:7px;
+  }
+
+  nav button{
+    min-height:38px;
+    font-size:10px;
+  }
+
+  main{
+    padding:
+      13px 10px
+      35px;
+  }
+
+  .card{
+    padding:15px;
+    border-radius:16px;
+  }
+
+  .date{
+    font-size:16px;
+  }
+
+  .status-title{
+    font-size:14px;
+  }
 }
 </style>
 </head>
@@ -335,32 +865,86 @@ footer{
 
 <header>
 
+  <!-- BANNER -->
   <div class="banner">
-    <img src="banner.png" alt="Bangal Matka">
+    <img
+      src="banner.png"
+      alt="Haryana Bazi"
+    >
   </div>
 
+
+  <!-- TOP BAR -->
   <div class="topbar">
-    <div class="live">
-      <span class="live-dot"></span> LIVE
+
+    <div class="brand-mini">
+
+      <div class="brand-logo">
+        H
+      </div>
+
+      <div class="brand-name">
+        Haryana Bazi
+      </div>
+
     </div>
 
-    <button class="refresh" onclick="location.reload()">
+    <div class="live">
+      <span class="live-dot"></span>
+      LIVE
+    </div>
+
+    <button
+      class="refresh"
+      onclick="location.reload()"
+    >
       Refresh
     </button>
+
   </div>
 
+
+  <!-- NEWS -->
   <div class="news-wrap">
-    <div class="news" id="newsText">
-      Welcome to BANGAL MATKA • Daily News & Updates •
+
+    <div
+      class="news"
+      id="newsText"
+    >
+      Welcome to Haryana Bazi • Daily Information & Updates •
     </div>
+
   </div>
 
+
+  <!-- NAV -->
   <nav>
-    <button class="active" onclick="showPage('home',this)">Home</button>
-    <button onclick="showPage('tips',this)">Tips</button>
-    <button onclick="showPage('lucky',this)">Lucky Number</button>
-    <button onclick="showPage('old',this)">Old</button>
-    <button onclick="showPage('patti',this)">Patti</button>
+
+    <button
+      class="active"
+      onclick="showPage('home',this)"
+    >
+      Home
+    </button>
+
+    <button
+      onclick="showPage('tips',this)"
+    >
+      Tips
+    </button>
+
+    <button
+      onclick="showPage('updates',this)"
+    >
+      Updates
+    </button>
+
+    <button
+      onclick="showPage('about',this)"
+    >
+      About
+    </button>
+
   </nav>
 
 </header>
@@ -368,24 +952,88 @@ footer{
 
 <main>
 
-<!-- HOME -->
 
-<section id="home" class="page active">
+<!-- ================================
+     HOME
+================================ -->
+
+<section
+  id="home"
+  class="page active"
+>
 
   <div class="card">
 
-    <div class="date" id="todayDate"></div>
+    <div class="date-box">
 
-    <h2 class="result-title">
-      TODAY RESULT <span></span>
-    </h2>
-
-    <div id="homeContent">
-
-      <div class="tip-message">
-        Today's result is not updated yet.<br>
-        Please check the Tips section.
+      <div class="date-label">
+        Today's Date
       </div>
+
+      <div
+        class="date"
+        id="todayDate"
+      >
+        --
+      </div>
+
+    </div>
+
+
+    <div class="status-title">
+
+      <span class="status-dot"></span>
+
+      TODAY INFORMATION
+
+    </div>
+
+
+    <div class="info-message">
+
+      Today's information has not been
+      updated yet.
+
+      <br>
+
+      Please check again later.
+
+    </div>
+
+  </div>
+
+
+  <!-- QUICK INFO -->
+
+  <div class="card">
+
+    <div class="card-title">
+
+      <div class="card-icon">
+        ✦
+      </div>
+
+      <div>
+
+        <h2>
+          Haryana Bazi
+        </h2>
+
+        <p>
+          Simple • Clean • Updated
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="about-text">
+
+      Welcome to Haryana Bazi.
+      This website provides daily information,
+      updates and useful content in a clean,
+      mobile-friendly format.
 
     </div>
 
@@ -394,114 +1042,51 @@ footer{
 </section>
 
 
-<!-- TIPS -->
+<!-- ================================
+     TIPS
+================================ -->
 
-<section id="tips" class="page">
+<section
+  id="tips"
+  class="page"
+>
 
   <div class="card">
 
-    <h2>Tips</h2>
+    <div class="card-title">
 
-    <br>
+      <div class="card-icon">
+        💡
+      </div>
 
-    <div id="tipsContent">
+      <div>
 
-      <div class="tip-message">
-        Tips are currently available.
+        <h2>
+          Tips
+        </h2>
+
+        <p>
+          Daily informational tips
+        </p>
+
       </div>
 
     </div>
 
-  </div>
 
+    <div
+      class="tip-box"
+      id="tipsContent"
+    >
 
-  <div class="card">
-
-    <h2>Vote</h2>
-
-    <div class="vote-grid" id="voteGrid">
-
-      <button class="vote-number" onclick="selectVote(0,this)">0</button>
-      <button class="vote-number" onclick="selectVote(1,this)">1</button>
-      <button class="vote-number" onclick="selectVote(2,this)">2</button>
-      <button class="vote-number" onclick="selectVote(3,this)">3</button>
-      <button class="vote-number" onclick="selectVote(4,this)">4</button>
-      <button class="vote-number" onclick="selectVote(5,this)">5</button>
-      <button class="vote-number" onclick="selectVote(6,this)">6</button>
-      <button class="vote-number" onclick="selectVote(7,this)">7</button>
-      <button class="vote-number" onclick="selectVote(8,this)">8</button>
-      <button class="vote-number" onclick="selectVote(9,this)">9</button>
-
-    </div>
-
-    <button class="action" onclick="confirmVote()">
-      Vote Confirm
-    </button>
-
-    <div class="vote-note" id="voteMessage"></div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>Vote Result</h3>
-
-    <br>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Number</th>
-          <th>Votes</th>
-          <th>Percentage</th>
-        </tr>
-      </thead>
-
-      <tbody id="voteResults"></tbody>
-
-    </table>
-
-  </div>
-
-</section>
-
-
-<!-- LUCKY -->
-
-<section id="lucky" class="page">
-
-  <div class="card">
-
-    <h2 style="text-align:center">Lucky Number</h2>
-
-    <div class="wheel-box">
-
-      <div class="pointer">▼</div>
-
-      <div class="wheel" id="wheel">
-
-        <div class="wheel-number">0</div>
-        <div class="wheel-number">1</div>
-        <div class="wheel-number">2</div>
-        <div class="wheel-number">3</div>
-        <div class="wheel-number">4</div>
-        <div class="wheel-number">5</div>
-        <div class="wheel-number">6</div>
-        <div class="wheel-number">7</div>
-        <div class="wheel-number">8</div>
-        <div class="wheel-number">9</div>
-
+      <div class="tip-label">
+        TIP OF THE DAY
       </div>
 
-      <div class="big-result" id="spinResult"></div>
+      <br>
 
-      <button class="action spin-btn" onclick="spinWheel()">
-        SPIN
-      </button>
-
-      <div class="vote-note" id="spinMessage"></div>
+      Tips are currently
+      not available.
 
     </div>
 
@@ -510,34 +1095,89 @@ footer{
 </section>
 
 
-<!-- OLD -->
+<!-- ================================
+     UPDATES
+================================ -->
 
-<section id="old" class="page">
+<section
+  id="updates"
+  class="page"
+>
 
   <div class="card">
 
-    <h2>Old Result</h2>
+    <div class="card-title">
 
-    <br>
+      <div class="card-icon">
+        📰
+      </div>
 
-    <div class="old-month">
+      <div>
 
-      <h3>Previous Results</h3>
+        <h2>
+          Latest Updates
+        </h2>
+
+        <p>
+          Recent website information
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-message">
+
+      New updates will appear here
+      when available.
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="card-title">
+
+      <div class="card-icon">
+        📅
+      </div>
+
+      <div>
+
+        <h2>
+          Previous Information
+        </h2>
+
+        <p>
+          Historical public information
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-wrap">
 
       <table>
 
         <thead>
+
           <tr>
             <th>Date</th>
-            <th>Result</th>
+            <th>Information</th>
           </tr>
+
         </thead>
 
         <tbody id="oldResults">
 
           <tr>
-            <td>Previous</td>
             <td>—</td>
+            <td>No information available</td>
           </tr>
 
         </tbody>
@@ -551,238 +1191,333 @@ footer{
 </section>
 
 
-<!-- PATTI -->
+<!-- ================================
+     ABOUT
+================================ -->
 
-<section id="patti" class="page">
+<section
+  id="about"
+  class="page"
+>
 
   <div class="card">
 
-    <img
-      src="patti.png"
-      class="patti-image"
-      alt="Patti Table"
-      onerror="this.style.display='none';document.getElementById('pattiFallback').style.display='block';"
+    <div class="card-title">
+
+      <div class="card-icon">
+        ℹ
+      </div>
+
+      <div>
+
+        <h2>
+          About Haryana Bazi
+        </h2>
+
+        <p>
+          About the website
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="about-text"
+      id="aboutContent"
     >
 
-    <div id="pattiFallback">
+      Haryana Bazi is a simple,
+      clean and mobile-friendly
+      information platform.
 
-      <table>
+      <br><br>
 
-        <thead>
-          <tr>
-            <th>1</th>
-            <th>2</th>
-            <th>3</th>
-            <th>4</th>
-            <th>5</th>
-            <th>6</th>
-            <th>7</th>
-            <th>8</th>
-            <th>9</th>
-            <th>0</th>
-          </tr>
-        </thead>
+      This section can later be edited
+      directly from the administration panel.
 
-        <tbody>
-          <tr>
-            <td>100</td><td>200</td><td>300</td><td>400</td><td>500</td>
-            <td>600</td><td>700</td><td>800</td><td>900</td><td>000</td>
-          </tr>
-        </tbody>
+    </div>
 
-      </table>
+  </div>
+
+
+  <!-- CONTACT -->
+
+  <div class="card">
+
+    <div class="card-title">
+
+      <div class="card-icon">
+        ☎
+      </div>
+
+      <div>
+
+        <h2>
+          Contact Us
+        </h2>
+
+        <p>
+          Get in touch
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="contact-list">
+
+      <div class="contact-item">
+
+        <div class="contact-icon">
+          ✉
+        </div>
+
+        <div>
+
+          <strong>
+            Email
+          </strong>
+
+          <span>
+            Contact information will be added here.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="contact-item">
+
+        <div class="contact-icon">
+          ⓘ
+        </div>
+
+        <div>
+
+          <strong>
+            Support
+          </strong>
+
+          <span>
+            Support details can be updated from admin.
+          </span>
+
+        </div>
+
+      </div>
 
     </div>
 
   </div>
 
 </section>
+
 
 </main>
 
 
 <footer>
-  © BANGAL MATKA
+
+  <div class="footer-brand">
+    Haryana Bazi
+  </div>
+
+  <div>
+    Simple • Professional • Mobile Friendly
+  </div>
+
+
+  <div class="footer-links">
+
+    <button
+      onclick="showPageById('about')"
+    >
+      About
+    </button>
+
+    <button
+      onclick="showPageById('about')"
+    >
+      Contact
+    </button>
+
+  </div>
+
 </footer>
 
 
 <script>
 
-function showPage(page,button){
+/* =====================================
+   PAGE NAVIGATION
+===================================== */
 
-  document.querySelectorAll('.page').forEach(function(p){
-    p.classList.remove('active');
-  });
+function showPage(pageId,button){
 
-  document.getElementById(page).classList.add('active');
+  document
+    .querySelectorAll(".page")
+    .forEach(function(page){
 
-  document.querySelectorAll('nav button').forEach(function(b){
-    b.classList.remove('active');
-  });
+      page.classList.remove("active");
 
-  button.classList.add('active');
+    });
+
+
+  const target =
+    document.getElementById(pageId);
+
+  if(target){
+
+    target.classList.add("active");
+
+  }
+
+
+  document
+    .querySelectorAll("nav button")
+    .forEach(function(btn){
+
+      btn.classList.remove("active");
+
+    });
+
+
+  if(button){
+
+    button.classList.add("active");
+
+  }
+
 
   window.scrollTo({
     top:0,
-    behavior:'smooth'
+    behavior:"smooth"
   });
+
 }
 
 
-/* DATE */
+/* =====================================
+   FOOTER NAVIGATION
+===================================== */
 
-const now = new Date();
+function showPageById(pageId){
 
-document.getElementById("todayDate").textContent =
-  now.toLocaleDateString("en-IN",{
-    day:"2-digit",
+  const button =
+    Array.from(
+      document.querySelectorAll("nav button")
+    ).find(function(btn){
+
+      return btn
+        .getAttribute("onclick")
+        ?.includes("'" + pageId + "'");
+
+    });
+
+
+  showPage(pageId,button);
+
+}
+
+
+/* =====================================
+   TODAY DATE
+===================================== */
+
+function updateDate(){
+
+  const date =
+    new Date();
+
+  const options = {
+    weekday:"long",
+    day:"numeric",
     month:"long",
     year:"numeric"
-  });
+  };
 
 
-/* VOTING */
-
-let selectedVote = null;
-
-let votes = JSON.parse(
-  localStorage.getItem("bangalVotes") ||
-  '[0,0,0,0,0,0,0,0,0,0]'
-);
-
-
-function selectVote(number,button){
-
-  document.querySelectorAll(".vote-number").forEach(function(b){
-    b.classList.remove("selected");
-  });
-
-  button.classList.add("selected");
-
-  selectedVote = number;
-}
-
-
-function confirmVote(){
-
-  if(selectedVote === null){
-
-    document.getElementById("voteMessage").textContent =
-      "Please select a number first.";
-
-    return;
-  }
-
-  votes[selectedVote]++;
-
-  localStorage.setItem(
-    "bangalVotes",
-    JSON.stringify(votes)
-  );
-
-  document.getElementById("voteMessage").textContent =
-    "Vote recorded. Thank you.";
-
-  updateVoteResults();
-}
-
-
-function updateVoteResults(){
-
-  const total =
-    votes.reduce((a,b)=>a+b,0);
-
-  const tbody =
-    document.getElementById("voteResults");
-
-  tbody.innerHTML="";
-
-  for(let i=0;i<10;i++){
-
-    const percentage =
-      total === 0
-      ? 0
-      : ((votes[i]/total)*100).toFixed(1);
-
-    tbody.innerHTML += `
-      <tr>
-        <td>${i}</td>
-        <td>${votes[i]}</td>
-        <td>${percentage}%</td>
-      </tr>
-    `;
-  }
-}
-
-updateVoteResults();
-
-
-/* LUCKY SPIN */
-
-let alreadySpun =
-  localStorage.getItem("bangalAlreadySpun") === "true";
-
-
-function spinWheel(){
-
-  if(alreadySpun){
-
-    document.getElementById("spinMessage").textContent =
-      "You have already used your spin.";
-
-    return;
-  }
-
-  alreadySpun=true;
-
-  localStorage.setItem(
-    "bangalAlreadySpun",
-    "true"
-  );
-
-  const result =
-    Math.floor(Math.random()*10);
-
-  const extraTurns =
-    5 + Math.floor(Math.random()*5);
-
-  const rotation =
-    extraTurns*360 + result*36;
-
-  const wheel =
-    document.getElementById("wheel");
-
-  wheel.style.transform =
-    `rotate(${rotation}deg)`;
-
-  document.getElementById("spinMessage").textContent =
-    "Spinning...";
-
-  setTimeout(function(){
-
-    const resultBox =
-      document.getElementById("spinResult");
-
-    resultBox.textContent =
-      result;
-
-    resultBox.style.display =
-      "block";
-
-    document.getElementById("spinMessage").textContent =
-      "Spin completed.";
-
-  },4200);
+  document
+    .getElementById("todayDate")
+    .textContent =
+      date.toLocaleDateString(
+        "en-IN",
+        options
+      );
 
 }
 
 
-/* NEWS */
+updateDate();
+
+
+/* =====================================
+   NEWS
+===================================== */
 
 function changeNews(text){
 
-  document.getElementById("newsText").textContent =
-    text;
+  document
+    .getElementById("newsText")
+    .textContent = text;
+
+}
+
+
+/* =====================================
+   PUBLIC DATA HOOKS
+   These functions will later be connected
+   to the admin/database.
+===================================== */
+
+function updateTips(text){
+
+  const box =
+    document.getElementById("tipsContent");
+
+  if(!box){
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="tip-label">
+      TIP OF THE DAY
+    </div>
+    <br>
+    ${escapeHTML(text)}
+  `;
+
+}
+
+
+function updateAbout(text){
+
+  const box =
+    document.getElementById("aboutContent");
+
+  if(box){
+
+    box.innerHTML =
+      escapeHTML(text)
+        .replace(/\n/g,"<br>");
+
+  }
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
