@@ -1,190 +1,792 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BANGAL MATKA</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f6f7f9;
+  color:#111827;
+}
+
+header{
+  background:#ffffff;
+  border-bottom:1px solid #e5e7eb;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.banner{
+  width:100%;
+  background:#fff;
+}
+
+.banner img{
+  width:100%;
+  max-height:220px;
+  object-fit:cover;
+  display:block;
+}
+
+.topbar{
+  padding:8px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.live{
+  font-size:13px;
+  font-weight:bold;
+  color:#dc2626;
+}
+
+.live-dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  background:#ef4444;
+  border-radius:50%;
+  margin-right:5px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.2}
+}
+
+.refresh{
+  border:1px solid #ddd;
+  background:#fff;
+  border-radius:7px;
+  padding:7px 12px;
+  cursor:pointer;
+}
+
+.news-wrap{
+  overflow:hidden;
+  white-space:nowrap;
+  background:#111827;
+  color:#fff;
+}
+
+.news{
+  display:inline-block;
+  padding:9px 0;
+  padding-left:100%;
+  animation:moveNews 18s linear infinite;
+}
+
+@keyframes moveNews{
+  from{transform:translateX(0)}
+  to{transform:translateX(-100%)}
+}
+
+nav{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
+  padding:8px;
+  background:#fff;
+}
+
+nav button{
+  border:1px solid #ddd;
+  background:#f8fafc;
+  border-radius:7px;
+  padding:10px 4px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+nav button.active{
+  background:#111827;
+  color:#fff;
+}
+
+main{
+  max-width:900px;
+  margin:auto;
+  padding:12px;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+.date{
+  text-align:center;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.result-title{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.result-title span{
+  display:inline-flex;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#ef4444;
+  margin-left:5px;
+  animation:blink 1s infinite;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  border:1px solid #ddd;
+  text-align:center;
+  padding:9px 4px;
+  font-weight:bold;
+}
+
+th{
+  background:#111827;
+  color:white;
+}
+
+.tip-message{
+  text-align:center;
+  padding:20px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.vote-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin:15px 0;
+}
+
+.vote-number{
+  aspect-ratio:1;
+  border-radius:50%;
+  border:2px solid #d1d5db;
+  background:#fff;
+  font-size:22px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.vote-number.selected{
+  background:#111827;
+  color:white;
+  border-color:#111827;
+}
+
+.action{
+  width:100%;
+  padding:12px;
+  border:0;
+  border-radius:8px;
+  background:#111827;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.vote-note{
+  text-align:center;
+  margin-top:10px;
+  color:#666;
+  font-size:13px;
+}
+
+.wheel-box{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  padding:15px;
+}
+
+.wheel{
+  width:250px;
+  height:250px;
+  border-radius:50%;
+  border:8px solid #111827;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:conic-gradient(
+    #fff 0deg 36deg,
+    #e5e7eb 36deg 72deg,
+    #fff 72deg 108deg,
+    #e5e7eb 108deg 144deg,
+    #fff 144deg 180deg,
+    #e5e7eb 180deg 216deg,
+    #fff 216deg 252deg,
+    #e5e7eb 252deg 288deg,
+    #fff 288deg 324deg,
+    #e5e7eb 324deg 360deg
+  );
+  transition:transform 4s cubic-bezier(.12,.75,.15,1);
+}
+
+.wheel-number{
+  position:absolute;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.wheel-number:nth-child(1){transform:translateY(-100px)}
+.wheel-number:nth-child(2){transform:translate(59px,-80px)}
+.wheel-number:nth-child(3){transform:translate(95px,-30px)}
+.wheel-number:nth-child(4){transform:translate(95px,30px)}
+.wheel-number:nth-child(5){transform:translate(59px,80px)}
+.wheel-number:nth-child(6){transform:translateY(100px)}
+.wheel-number:nth-child(7){transform:translate(-59px,80px)}
+.wheel-number:nth-child(8){transform:translate(-95px,30px)}
+.wheel-number:nth-child(9){transform:translate(-95px,-30px)}
+.wheel-number:nth-child(10){transform:translate(-59px,-80px)}
+
+.pointer{
+  margin-bottom:-5px;
+  font-size:28px;
+  z-index:2;
+}
+
+.spin-btn{
+  margin-top:20px;
+  width:180px;
+}
+
+.big-result{
+  display:none;
+  text-align:center;
+  font-size:42px;
+  font-weight:bold;
+  margin:20px 0;
+  animation:pop .7s ease;
+}
+
+@keyframes pop{
+  0%{transform:scale(.2);opacity:0}
+  70%{transform:scale(1.2)}
+  100%{transform:scale(1);opacity:1}
+}
+
+.patti-image{
+  width:100%;
+  display:block;
+  border-radius:8px;
+}
+
+.old-month{
+  margin-bottom:12px;
+}
+
+.old-month h3{
+  margin-bottom:7px;
+}
+
+footer{
+  text-align:center;
+  padding:25px;
+  color:#777;
+  font-size:13px;
+}
+
+@media(max-width:500px){
+  .banner img{max-height:170px}
+  nav button{font-size:11px}
+  th,td{font-size:12px}
+  .wheel{width:220px;height:220px}
+}
+</style>
 </head>
 
 <body>
+
 <header>
 
-<div class="banner">
-<img src="banner.png">
-</div>
-<div class="top-header">
+  <div class="banner">
+    <img src="banner.png" alt="Bangal Matka">
+  </div>
 
-<div class="top-buttons">
+  <div class="topbar">
+    <div class="live">
+      <span class="live-dot"></span> LIVE
+    </div>
 
-<button class="live-btn">
-🔴 LIVE
-</button>
+    <button class="refresh" onclick="location.reload()">
+      Refresh
+    </button>
+  </div>
 
-<button class="refresh-btn" onclick="location.reload()">
-Refresh
-</button>
+  <div class="news-wrap">
+    <div class="news" id="newsText">
+      Welcome to BANGAL MATKA • Daily News & Updates •
+    </div>
+  </div>
 
-</div>
-
-<h1>BANGAL MATKA</h1>
-
-<p class="fast-result">
-Fast Results
-</p>
-
-<div class="time-text">
-⏳ Live : <span id="clock"></span>
-</div>
-
-</div>
-<nav>
-<button onclick="showHome()">BM HOME</button>
-<button onclick="showTips()">BM TIPS</button>
-<button onclick="showOld()">OLD RESULT</button>
-</nav>
+  <nav>
+    <button class="active" onclick="showPage('home',this)">Home</button>
+    <button onclick="showPage('tips',this)">Tips</button>
+    <button onclick="showPage('lucky',this)">Lucky Number</button>
+    <button onclick="showPage('old',this)">Old</button>
+    <button onclick="showPage('patti',this)">Patti</button>
+  </nav>
 
 </header>
 
-<section id="homePage">
 
+<main>
 
+<!-- HOME -->
 
-<div class="result-container">
+<section id="home" class="page active">
 
-<div class="top-buttons">
+  <div class="card">
 
-</div>
+    <div class="date" id="todayDate"></div>
 
-<h2>RESULT TODAY</h2>
+    <h2 class="result-title">
+      TODAY RESULT <span></span>
+    </h2>
 
-<table>
+    <div id="homeContent">
 
-<tr>
-<th>1</th>
-<th>2</th>
-<th>3</th>
-<th>4</th>
-<th>5</th>
-<th>6</th>
-<th>7</th>
-<th>8</th>
-</tr>
+      <div class="tip-message">
+        Today's result is not updated yet.<br>
+        Please check the Tips section.
+      </div>
 
-<tr>
-<td id="r1">-</td>
-<td id="r2">-</td>
-<td id="r3">-</td>
-<td id="r4">-</td>
-<td id="r5">-</td>
-<td id="r6">-</td>
-<td id="r7">-</td>
-<td id="r8">-</td>
-</tr>
+    </div>
 
-<tr>
-<td id="s1">-</td>
-<td id="s2">-</td>
-<td id="s3">-</td>
-<td id="s4">-</td>
-<td id="s5">-</td>
-<td id="s6">-</td>
-<td id="s7">-</td>
-<td id="s8">-</td>
-</tr>
-
-</table>
-
-</div>
-
-<div class="running-popup">
-<span id="dailyBazi"></span>
-</div>
-
-<div class="previous-box">
-
-<h2>Previous BM Results</h2>
-<div id="previousResults"></div>
-<button class="more-btn" onclick="showOld()">
-MORE RESULTS
-</button>
-
-</div>
+  </div>
 
 </section>
 
-<section id="tipsPage" style="display:none;">
 
-<h2 class="tips-title">
-DAILY 8 BAZI TIPS
-</h2>
+<!-- TIPS -->
 
-<table class="tips-table">
+<section id="tips" class="page">
 
-<tr>
-<th>Tip of the Day</th>
-<th><span id="tipDate"></span></th>
-</tr>
+  <div class="card">
 
-<tr><td>1 Bazi</td><td><span id="tip1"></span></td></tr>
+    <h2>Tips</h2>
 
-<tr><td>2 Bazi</td><td><span id="tip2"></span></td></tr>
+    <br>
 
-<tr><td>3 Bazi</td><td><span id="tip3"></span></td></tr>
+    <div id="tipsContent">
 
-<tr><td>4 Bazi</td><td><span id="tip4"></span></td></tr>
+      <div class="tip-message">
+        Tips are currently available.
+      </div>
 
-<tr><td>5 Bazi</td><td><span id="tip5"></span></td></tr>
+    </div>
 
-<tr><td>6 Bazi</td><td><span id="tip6"></span></td></tr>
+  </div>
 
-<tr><td>7 Bazi</td><td><span id="tip7"></span></td></tr>
 
-<tr><td>8 Bazi</td><td><span id="tip8"></span></td></tr>
+  <div class="card">
 
-</table>
+    <h2>Vote</h2>
 
-<h2 class="tips-title">TIME TABLE</h2>
+    <div class="vote-grid" id="voteGrid">
 
-<table class="time-table">
+      <button class="vote-number" onclick="selectVote(0,this)">0</button>
+      <button class="vote-number" onclick="selectVote(1,this)">1</button>
+      <button class="vote-number" onclick="selectVote(2,this)">2</button>
+      <button class="vote-number" onclick="selectVote(3,this)">3</button>
+      <button class="vote-number" onclick="selectVote(4,this)">4</button>
+      <button class="vote-number" onclick="selectVote(5,this)">5</button>
+      <button class="vote-number" onclick="selectVote(6,this)">6</button>
+      <button class="vote-number" onclick="selectVote(7,this)">7</button>
+      <button class="vote-number" onclick="selectVote(8,this)">8</button>
+      <button class="vote-number" onclick="selectVote(9,this)">9</button>
 
-<tr>
-<th>BAZI</th>
-<th>TIME</th>
-</tr>
+    </div>
 
-<tr><td>1st Bazi</td><td>10 AM</td></tr>
-<tr><td>2nd Bazi</td><td>11 AM</td></tr>
-<tr><td>3rd Bazi</td><td>12 PM</td></tr>
-<tr><td>4th Bazi</td><td>1 PM</td></tr>
-<tr><td>5th Bazi</td><td>2 PM</td></tr>
-<tr><td>6th Bazi</td><td>3 PM</td></tr>
-<tr><td>7th Bazi</td><td>4 PM</td></tr>
-<tr><td>8th Bazi</td><td>5 PM</td></tr>
+    <button class="action" onclick="confirmVote()">
+      Vote Confirm
+    </button>
 
-</table>
+    <div class="vote-note" id="voteMessage"></div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>Vote Result</h3>
+
+    <br>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Votes</th>
+          <th>Percentage</th>
+        </tr>
+      </thead>
+
+      <tbody id="voteResults"></tbody>
+
+    </table>
+
+  </div>
 
 </section>
 
-<section id="oldPage" style="display:none;">
 
-<h2 class="old-title">
-BANGAL MATKA OLD RESULT
-</h2>
+<!-- LUCKY -->
 
-<select id="monthSelect" class="month-select">
-</select>
+<section id="lucky" class="page">
 
-<div id="oldResultsContainer"></div>
+  <div class="card">
+
+    <h2 style="text-align:center">Lucky Number</h2>
+
+    <div class="wheel-box">
+
+      <div class="pointer">▼</div>
+
+      <div class="wheel" id="wheel">
+
+        <div class="wheel-number">0</div>
+        <div class="wheel-number">1</div>
+        <div class="wheel-number">2</div>
+        <div class="wheel-number">3</div>
+        <div class="wheel-number">4</div>
+        <div class="wheel-number">5</div>
+        <div class="wheel-number">6</div>
+        <div class="wheel-number">7</div>
+        <div class="wheel-number">8</div>
+        <div class="wheel-number">9</div>
+
+      </div>
+
+      <div class="big-result" id="spinResult"></div>
+
+      <button class="action spin-btn" onclick="spinWheel()">
+        SPIN
+      </button>
+
+      <div class="vote-note" id="spinMessage"></div>
+
+    </div>
+
+  </div>
 
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+
+<!-- OLD -->
+
+<section id="old" class="page">
+
+  <div class="card">
+
+    <h2>Old Result</h2>
+
+    <br>
+
+    <div class="old-month">
+
+      <h3>Previous Results</h3>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+
+        <tbody id="oldResults">
+
+          <tr>
+            <td>Previous</td>
+            <td>—</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PATTI -->
+
+<section id="patti" class="page">
+
+  <div class="card">
+
+    <img
+      src="patti.png"
+      class="patti-image"
+      alt="Patti Table"
+      onerror="this.style.display='none';document.getElementById('pattiFallback').style.display='block';"
+    >
+
+    <div id="pattiFallback">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th>9</th>
+            <th>0</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>100</td><td>200</td><td>300</td><td>400</td><td>500</td>
+            <td>600</td><td>700</td><td>800</td><td>900</td><td>000</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+  © BANGAL MATKA
+</footer>
+
+
+<script>
+
+function showPage(page,button){
+
+  document.querySelectorAll('.page').forEach(function(p){
+    p.classList.remove('active');
+  });
+
+  document.getElementById(page).classList.add('active');
+
+  document.querySelectorAll('nav button').forEach(function(b){
+    b.classList.remove('active');
+  });
+
+  button.classList.add('active');
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+
+/* DATE */
+
+const now = new Date();
+
+document.getElementById("todayDate").textContent =
+  now.toLocaleDateString("en-IN",{
+    day:"2-digit",
+    month:"long",
+    year:"numeric"
+  });
+
+
+/* VOTING */
+
+let selectedVote = null;
+
+let votes = JSON.parse(
+  localStorage.getItem("bangalVotes") ||
+  '[0,0,0,0,0,0,0,0,0,0]'
+);
+
+
+function selectVote(number,button){
+
+  document.querySelectorAll(".vote-number").forEach(function(b){
+    b.classList.remove("selected");
+  });
+
+  button.classList.add("selected");
+
+  selectedVote = number;
+}
+
+
+function confirmVote(){
+
+  if(selectedVote === null){
+
+    document.getElementById("voteMessage").textContent =
+      "Please select a number first.";
+
+    return;
+  }
+
+  votes[selectedVote]++;
+
+  localStorage.setItem(
+    "bangalVotes",
+    JSON.stringify(votes)
+  );
+
+  document.getElementById("voteMessage").textContent =
+    "Vote recorded. Thank you.";
+
+  updateVoteResults();
+}
+
+
+function updateVoteResults(){
+
+  const total =
+    votes.reduce((a,b)=>a+b,0);
+
+  const tbody =
+    document.getElementById("voteResults");
+
+  tbody.innerHTML="";
+
+  for(let i=0;i<10;i++){
+
+    const percentage =
+      total === 0
+      ? 0
+      : ((votes[i]/total)*100).toFixed(1);
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${i}</td>
+        <td>${votes[i]}</td>
+        <td>${percentage}%</td>
+      </tr>
+    `;
+  }
+}
+
+updateVoteResults();
+
+
+/* LUCKY SPIN */
+
+let alreadySpun =
+  localStorage.getItem("bangalAlreadySpun") === "true";
+
+
+function spinWheel(){
+
+  if(alreadySpun){
+
+    document.getElementById("spinMessage").textContent =
+      "You have already used your spin.";
+
+    return;
+  }
+
+  alreadySpun=true;
+
+  localStorage.setItem(
+    "bangalAlreadySpun",
+    "true"
+  );
+
+  const result =
+    Math.floor(Math.random()*10);
+
+  const extraTurns =
+    5 + Math.floor(Math.random()*5);
+
+  const rotation =
+    extraTurns*360 + result*36;
+
+  const wheel =
+    document.getElementById("wheel");
+
+  wheel.style.transform =
+    `rotate(${rotation}deg)`;
+
+  document.getElementById("spinMessage").textContent =
+    "Spinning...";
+
+  setTimeout(function(){
+
+    const resultBox =
+      document.getElementById("spinResult");
+
+    resultBox.textContent =
+      result;
+
+    resultBox.style.display =
+      "block";
+
+    document.getElementById("spinMessage").textContent =
+      "Spin completed.";
+
+  },4200);
+
+}
+
+
+/* NEWS */
+
+function changeNews(text){
+
+  document.getElementById("newsText").textContent =
+    text;
+
+}
+
+</script>
+
 </body>
 </html>
