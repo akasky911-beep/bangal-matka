@@ -5,135 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haryana Bazi | Information & Updates</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- HEADER -->
     <header class="main-header">
         <div class="header-banner">
-            <img src="assets/banner.png" alt="Haryana Bazi Banner" onerror="this.style.display='none'">
+            <!-- Existing banner image -->
+            <img src="banner.png" alt="Haryana Bazi Banner" onerror="this.style.display='none'">
         </div>
         <div class="header-brand-row">
-            <div class="brand">
-                <div class="logo-icon">H</div>
-                <h1>Haryana Bazi</h1>
-            </div>
+            <div class="brand-title">HARYANA BAZI</div>
             <div class="header-actions">
                 <span class="live-indicator"><span class="dot"></span> LIVE</span>
-                <button id="refreshBtn" class="icon-btn"><i class="fas fa-sync-alt"></i></button>
+                <button id="refreshBtn" class="icon-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
             </div>
         </div>
     </header>
 
-    <!-- News Marquee -->
-    <div class="news-bar">
-        <marquee id="newsMarquee" behavior="scroll" direction="left">Welcome to Haryana Bazi • Daily Information & Updates • Loading...</marquee>
+    <!-- SCROLLING NEWS -->
+    <div class="news-bar" id="newsBarContainer">
+        <marquee id="newsMarquee" behavior="scroll" direction="left">Loading latest updates...</marquee>
     </div>
 
-    <!-- Navigation -->
+    <!-- MAIN NAVIGATION -->
     <nav class="main-nav">
-        <button class="nav-btn active" data-target="home">Home</button>
-        <button class="nav-btn" data-target="tips">Tips</button>
-        <button class="nav-btn" data-target="updates">Updates</button>
-        <button class="nav-btn" data-target="wheel">Lucky Number</button>
-        <button class="nav-btn" data-target="voting">Voting</button>
-        <button class="nav-btn" data-target="archive">Archive</button>
-        <button class="nav-btn" data-target="patti">Patti</button>
-        <button class="nav-btn" data-target="about">About</button>
+        <button class="nav-btn active" data-target="home">HOME</button>
+        <button class="nav-btn" data-target="tips">TIPS</button>
+        <button class="nav-btn" data-target="updates">UPDATES</button>
+        
+        <!-- Dropdown -->
+        <div class="dropdown">
+            <button class="nav-btn dropbtn" id="moreBtn">MORE ▼</button>
+            <div class="dropdown-content" id="moreDropdown">
+                <a href="#" data-target="wheel">Lucky Number</a>
+                <a href="#" data-target="voting">Voting</a>
+                <a href="#" data-target="archive">Old Information</a>
+                <a href="#" data-target="patti">Patti</a>
+                <a href="#" data-target="about">About</a>
+                <a href="#" data-target="contact">Contact</a>
+            </div>
+        </div>
     </nav>
 
-    <!-- Main Content Area -->
+    <!-- CONTENT AREA -->
     <main class="content-container">
         
         <!-- HOME SECTION -->
         <section id="home" class="page-section active">
             <div class="card date-card">
                 <i class="far fa-calendar-alt"></i>
-                <span id="currentDate">Loading date...</span>
+                <span id="currentDate"></span>
             </div>
             
-            <div class="card info-card">
-                <h2>Today's Information</h2>
+            <div class="card info-card" id="todayInfoCard">
+                <h2 id="todayInfoTitle">TODAY'S INFORMATION</h2>
                 <div id="todayInfoContent" class="content-state loading">Loading information...</div>
+                <div class="last-updated" id="todayLastUpdated"></div>
             </div>
 
-            <div class="card intro-card">
-                <h2>Haryana Bazi</h2>
-                <p class="subtitle">Simple • Clean • Updated</p>
-                <p id="aboutIntroContent">Welcome to Haryana Bazi. This website provides daily information, updates and useful content in a clean, mobile-friendly format.</p>
+            <div class="preview-section mt-24">
+                <div class="card">
+                    <h3>Latest Tip</h3>
+                    <div id="homeTipPreview" class="loading">Loading...</div>
+                    <button class="nav-btn-link mt-16" data-target="tips">VIEW ALL TIPS &rarr;</button>
+                </div>
             </div>
         </section>
 
         <!-- TIPS SECTION -->
         <section id="tips" class="page-section">
-            <h2 class="section-title">Daily Tips</h2>
-            <div id="tipsContainer" class="list-container"></div>
+            <h2 class="section-title">Tips</h2>
+            <div id="tipsContainer" class="list-container loading">Loading tips...</div>
         </section>
 
         <!-- UPDATES SECTION -->
         <section id="updates" class="page-section">
-            <h2 class="section-title">Latest Updates</h2>
-            <div id="updatesContainer" class="list-container"></div>
+            <h2 class="section-title">Updates</h2>
+            <div id="updatesContainer" class="list-container loading">Loading updates...</div>
         </section>
 
-        <!-- LUCKY NUMBER (ENTERTAINMENT) -->
+        <!-- LUCKY NUMBER -->
         <section id="wheel" class="page-section text-center">
-            <h2 class="section-title">Lucky Number Spinner</h2>
-            <p class="subtitle text-muted">For entertainment purposes only.</p>
+            <h2 class="section-title">LUCKY NUMBER</h2>
+            <p class="subtitle text-muted">Entertainment Feature</p>
             
-            <div class="wheel-container">
+            <div class="wheel-container mt-24">
                 <div class="wheel-pointer">▼</div>
-                <div class="wheel" id="spinWheel">
-                    <!-- Numbers will be injected by JS -->
-                </div>
+                <div class="wheel" id="spinWheel"></div>
             </div>
             
-            <button id="spinBtn" class="primary-btn mt-20">SPIN THE WHEEL</button>
+            <button id="spinBtn" class="primary-btn mt-24">SPIN</button>
+            <p id="spinLimitMsg" class="text-muted mt-12 hidden">You have already used your spin.</p>
             
-            <div id="spinResult" class="result-display hidden">
-                <h3>Your Lucky Number</h3>
+            <div id="spinResult" class="result-display hidden mt-24">
+                <h3>YOUR LUCKY NUMBER</h3>
                 <div class="number-circle" id="resultNumber">-</div>
             </div>
         </section>
 
         <!-- VOTING SECTION -->
         <section id="voting" class="page-section">
-            <h2 class="section-title">Community Vote</h2>
-            <p class="subtitle text-muted">Select a number (0-9) to cast your vote.</p>
+            <h2 class="section-title">VOTING</h2>
+            <div class="voting-grid mt-24" id="votingGrid"></div>
             
-            <div class="voting-grid" id="votingGrid">
-                <!-- Buttons injected by JS -->
-            </div>
+            <button id="submitVoteBtn" class="primary-btn mt-24" disabled>VOTE CONFIRM</button>
+            <div id="voteMessage" class="message hidden mt-12"></div>
             
-            <button id="submitVoteBtn" class="primary-btn mt-20" disabled>CONFIRM VOTE</button>
-            <div id="voteMessage" class="message hidden"></div>
-            
-            <div id="votingStats" class="mt-20 hidden">
-                <h3>Current Results</h3>
+            <div id="votingStats" class="mt-24 hidden card">
+                <h3>Results</h3>
                 <div id="statsContainer"></div>
             </div>
         </section>
 
-        <!-- ARCHIVE (OLD INFO) -->
+        <!-- OLD INFORMATION -->
         <section id="archive" class="page-section">
-            <h2 class="section-title">Old Information</h2>
-            <div id="archiveContainer" class="list-container"></div>
+            <h2 class="section-title">OLD INFORMATION</h2>
+            <div class="search-box mt-16">
+                <input type="text" id="archiveSearch" placeholder="Search records...">
+            </div>
+            <div id="archiveContainer" class="list-container mt-20 loading">Loading old records...</div>
         </section>
 
         <!-- PATTI SECTION -->
         <section id="patti" class="page-section">
-            <h2 class="section-title">Patti Reference</h2>
-            <div class="patti-image-container">
-                <img src="assets/patti.png" alt="Patti Image" onerror="this.style.display='none'">
+            <h2 class="section-title">PATTI INFORMATION</h2>
+            
+            <div class="patti-image-container mt-16" id="pattiImageWrapper">
+                <img src="patti.png" id="pattiImg" alt="Patti Image" onerror="showPattiTableFallback()">
             </div>
-            <div id="pattiTableContainer" class="table-container mt-20">
+            
+            <div id="pattiTableContainer" class="table-container mt-20 hidden">
                 <table class="data-table">
                     <thead>
-                        <tr><th>Category</th><th>Value</th><th>Description</th></tr>
+                        <tr><th>Number</th><th>Information</th><th>Description</th></tr>
                     </thead>
                     <tbody id="pattiTableBody"></tbody>
                 </table>
@@ -143,23 +150,31 @@
         <!-- ABOUT SECTION -->
         <section id="about" class="page-section">
             <div class="card">
-                <h2 id="aboutHeading">About Haryana Bazi</h2>
-                <div id="aboutDescription" class="mt-10">Loading...</div>
+                <h2 id="aboutHeading">ABOUT HARYANA BAZI</h2>
+                <div id="aboutDescription" class="mt-16 loading">Loading...</div>
             </div>
-            <div class="card mt-20" id="contactInfo">
-                <h2>Contact Us</h2>
-                <p><i class="fas fa-envelope"></i> <span id="contactEmail">support@example.com</span></p>
-                <p><i class="fas fa-phone"></i> <span id="contactPhone">N/A</span></p>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="page-section">
+            <div class="card" id="contactInfoCard">
+                <h2 id="contactHeading">CONTACT</h2>
+                <div id="contactContent" class="mt-16 loading">Loading...</div>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer class="main-footer">
-        <h2>Haryana Bazi</h2>
-        <p>Simple • Professional • Mobile Friendly</p>
-        <p class="copyright">&copy; 2026 Haryana Bazi. All rights reserved.</p>
+        <h3>HARYANA BAZI</h3>
+        <p id="footerBio" class="mt-8">Haryana Bazi is a simple, mobile-friendly platform providing daily information, updates and entertainment features.</p>
+        <div class="footer-links mt-16">
+            <span class="footer-link" data-target="home">Home</span> | 
+            <span class="footer-link" data-target="tips">Tips</span> | 
+            <span class="footer-link" data-target="about">About</span>
+        </div>
+        <p class="copyright mt-16">&copy; 2026 Haryana Bazi</p>
     </footer>
 
     <script src="script.js"></script>
