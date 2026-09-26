@@ -1,416 +1,410 @@
-body{
-    margin:0;
-    padding:0;
-    background:#000d26;
-    font-family:Arial,sans-serif;
-    overflow-x:hidden;
+/* =========================
+   BANGAL MATKA - LIGHT THEME
+   ========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* HEADER */
-
-header{
-    background:#000d26;
+html {
+    scroll-behavior: smooth;
 }
 
-.banner img{
-    width:100%;
-    display:block;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    line-height: 1.5;
 }
 
-/* NAVIGATION */
+/* =========================
+   HEADER
+   ========================= */
 
-nav{
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    padding:10px;
-    background:#001845;
-    position:sticky;
-    top:0;
-    z-index:9999;
+header {
+    background: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-nav button{
-    background:#d40000;
-    color:white;
-    border:none;
-    padding:8px 12px;
-    border-radius:10px;
-    font-size:12px;
-    font-weight:bold;
+.banner {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-/* TITLE */
-
-h1{
-    color:#4da6ff;
-    text-align:center;
-    font-size:48px;
-    margin:10px 0;
+.banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
 }
 
-h2{
-    color:yellow;
-    text-align:center;
-    font-size:28px;
+.top-header {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 10px 15px;
 }
 
-/* FAST RESULT */
+/* =========================
+   TOP BUTTONS
+   ========================= */
 
-.fast-result{
-    text-align:center;
-    color:gold;
-    font-size:36px;
-    font-weight:bold;
+.top-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
-.time-text{
-    text-align:center;
-    color:white;
-    font-size:18px;
-    margin-bottom:10px;
+.top-buttons button,
+.refresh-btn,
+.live-btn {
+    border: 1px solid #d6d6d6;
+    background: #ffffff;
+    color: #333;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
 }
 
-/* MAIN BOX */
-
-.result-container,
-.previous-box,
-.old-result-box{
-    width:95%;
-    margin:auto;
-    background:#071a3d;
-    padding:10px;
-    border-radius:20px;
-    box-sizing:border-box;
-    margin-top:15px;
+.top-buttons button:hover,
+.refresh-btn:hover {
+    background: #f1f1f1;
 }
 
-/* FIXED LIVE + REFRESH BUTTON */
-
-.top-header{
-    position:relative;
-    text-align:center;
-    padding:15px 10px;
-    background:#001133;
+.live-btn {
+    color: #c62828;
+    font-weight: bold;
 }
 
-.top-buttons{
-    position:absolute;
-    top:70%;
-    left:0;
-    width:100%;
-    transform:translateY(-50%);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 20px;
-    box-sizing:border-box;
-    pointer-events:none;
+h1 {
+    text-align: center;
+    font-size: 25px;
+    margin: 8px 0;
+    color: #222;
 }
 
-.live-btn,
-.refresh-btn{
-@keyframes blink{
-0%{
-opacity:1;
-box-shadow:0 0 5px red;
-}
-50%{
-opacity:0.3;
-box-shadow:0 0 20px red;
-}
-100%{
-opacity:1;
-box-shadow:0 0 5px red;
-}
-}
-    pointer-events:auto;
+/* =========================
+   LIVE / FAST RESULT
+   ========================= */
+
+.fast-result {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 5px 0;
+    color: #555;
 }
 
-/* BUTTONS */
+.time-text {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    margin: 5px 0 10px;
+}
 
-.live-btn{
-    background:red;
-    color:white;
-    border:none;
-    padding:12px 18px;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:bold;
+#clock {
+    font-weight: bold;
+    color: #333;
+}
+
+/* =========================
+   NAVIGATION
+   ========================= */
+
+nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 8px 0;
+}
+
+nav button {
+    border: none;
+    background: #eeeeee;
+    color: #222;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+nav button:hover {
+    background: #dddddd;
+}
+
+nav button:active {
+    transform: scale(0.97);
+}
+
+/* =========================
+   MAIN CONTENT
+   ========================= */
+
+section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 15px auto;
+    padding: 0 12px;
+}
+
+.result-container {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.result-container h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #222;
+}
+
+/* =========================
+   DATE / TODAY RESULT
+   ========================= */
+
+.result-container h2,
+.result-container h3 {
+    font-weight: 700;
+}
+
+.result-container h2::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 7px;
+    background: #e53935;
+    border-radius: 50%;
+    vertical-align: middle;
     animation: blink 1s infinite;
 }
 
-.refresh-btn{
-    background:gold;
-    color:black;
-    border:none;
-    padding:12px 18px;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:bold;
-}
-
-/* PAGE TOP SPACE */
-
-.result-container{
-    margin-top:70px;
-}
-
-/* TABLE */
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    table-layout:fixed;
-    margin-top:10px;
-}
-
-th{
-    background:#d40000;
-    color:yellow;
-    font-size:10px;
-    padding:5px;
-}
-
-td{
-    background:#ece6b7;
-    color:#700000;
-    font-size:9px;
-    padding:5px;
-    text-align:center;
-    font-weight:bold;
-    border:1px solid #ccc;
-}
-
-/* RUNNING TEXT */
-
-.running-popup{
-    width:95%;
-    margin:15px auto;
-    background:#005eff;
-    color:white;
-    overflow:hidden;
-    white-space:nowrap;
-    border-radius:10px;
-    padding:10px 0;
-    font-weight:bold;
-}
-
-.running-popup span{
-    display:inline-block;
-    padding-left:100%;
-    animation:run 12s linear infinite;
-}
-
-@keyframes run{
-
-    0%{
-        transform:translateX(0);
+@keyframes blink {
+    0%, 45% {
+        opacity: 1;
     }
 
-    100%{
-        transform:translateX(-100%);
+    50%, 100% {
+        opacity: 0.15;
     }
-    
 }
 
-/* TIPS */
+/* =========================
+   TABLE
+   ========================= */
 
-.tips-table,
-.time-table{
-    width:95%;
-    margin:auto;
-    margin-top:20px;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    margin: 10px 0;
 }
 
-.tips-title,
-.old-title{
-    text-align:center;
-    color:yellow;
-    margin-top:20px;
+th {
+    background: #222222;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 9px 5px;
+    border: 1px solid #cccccc;
+    text-align: center;
 }
 
-/* MONTH SELECT */
-
-.month-select{
-    width:95%;
-    margin:10px auto;
-    display:block;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    font-size:14px;
+td {
+    padding: 9px 5px;
+    border: 1px solid #dddddd;
+    text-align: center;
+    font-weight: 600;
+    color: #222;
+    background: #ffffff;
 }
 
-/* MORE BUTTON */
-
-.more-btn{
-    width:100%;
-    margin-top:15px;
-    background:#ff0000;
-    color:white;
-    border:none;
-    padding:10px;
-    border-radius:10px;
-    font-weight:bold;
+tr:nth-child(even) td {
+    background: #fafafa;
 }
 
-/* MOBILE */
+tr:hover td {
+    background: #f1f1f1;
+}
 
-@media(max-width:600px){
+/* =========================
+   EXTRA TOP BUTTON AREA
+   ========================= */
 
-    h1{
-        font-size:36px;
+.result-container .top-buttons {
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.result-container .top-buttons button {
+    background: #eeeeee;
+}
+
+/* =========================
+   TIPS / OLD / OTHER PAGES
+   ========================= */
+
+#tipsPage,
+#oldPage,
+#pattiPage,
+#luckyPage {
+    display: none;
+}
+
+.page-box {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding: 18px;
+    margin-top: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.page-box h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* =========================
+   GENERAL BUTTON
+   ========================= */
+
+button {
+    font-family: inherit;
+}
+
+button:focus {
+    outline: none;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+
+    body {
+        font-size: 14px;
     }
 
-    h2{
-        font-size:22px;
+    .banner img {
+        max-height: 220px;
     }
 
-    .fast-result{
-        font-size:26px;
+    .top-header {
+        padding: 8px 8px;
     }
 
-    .time-text{
-        font-size:15px;
+    h1 {
+        font-size: 21px;
     }
 
-    nav button{
-        font-size:10px;
-        padding:7px 8px;
+    .top-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
-    th{
-        font-size:8px;
-        padding:4px;
+    nav {
+        gap: 5px;
     }
 
-    td{
-        font-size:7px;
-        padding:4px;
+    nav button {
+        padding: 8px 11px;
+        font-size: 12px;
     }
 
-    .live-btn,
-    .refresh-btn{
-        font-size:11px;
-        padding:6px 10px;
+    .result-container {
+        padding: 8px;
+        overflow-x: auto;
     }
 
-}
-/* PREMIUM ROUND TABLE */
+    table {
+        min-width: 600px;
+    }
 
-table{
-    width:100%;
-    border-collapse:separate;
-    border-spacing:0;
-    overflow:hidden;
-    border-radius:15px;
-}
+    th,
+    td {
+        padding: 7px 4px;
+        font-size: 13px;
+    }
 
-/* TOP LEFT */
-
-table tr:first-child th:first-child{
-    border-top-left-radius:15px;
+    section {
+        padding: 0 7px;
+    }
 }
 
-/* TOP RIGHT */
+/* =========================
+   VERY SMALL PHONES
+   ========================= */
 
-table tr:first-child th:last-child{
-    border-top-right-radius:15px;
+@media (max-width: 400px) {
+
+    .banner img {
+        max-height: 180px;
+    }
+
+    h1 {
+        font-size: 19px;
+    }
+
+    nav button {
+        padding: 7px 9px;
+        font-size: 11px;
+    }
+
+    .fast-result {
+        font-size: 12px;
+    }
+
+    .time-text {
+        font-size: 11px;
+    }
 }
 
-/* BOTTOM LEFT */
+/* =========================
+   HIDDEN CLASS
+   ========================= */
 
-table tr:last-child td:first-child{
-    border-bottom-left-radius:15px;
-}
-
-/* BOTTOM RIGHT */
-
-table tr:last-child td:last-child{
-    border-bottom-right-radius:15px;
-}
-/* REMOVE EXTRA GAP */
-
-.top-header{
-    padding:5px 0;
-    margin:0;
+.hidden {
+    display: none !important;
 }
 
-nav{
-    margin:0;
-    padding:6px 0;
+/* =========================
+   SIMPLE NOTICE / MESSAGE
+   ========================= */
+
+.notice {
+    background: #fafafa;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    color: #555;
+    margin: 10px 0;
 }
 
-#homePage{
-    padding-top:5px;
-    margin-top:0;
-}
+/* =========================
+   FOOTER
+   ========================= */
 
-.result-container{
-    margin-top:5px;
-}
-
-/* TITLE AREA */
-
-h1{
-    margin:5px 0;
-}
-
-.fast-result{
-    margin:5px 0;
-}
-
-.time-text{
-    margin:5px 0d;
-}
-/* NAVIGATION BUTTONS */
-
-nav button{
-    background:red;
-    color:white;
-    border:none;
-    padding:13px 24px;
-    font-size:18px;
-    border-radius:14px;
-    margin:8px;
-    font-weight:bold;
-}
-/* PREVIOUS RESULT GAP FIX */
-
-.previous-box{
-    padding-top:0 !important;
-    margin-top:0 !important;
-}
-
-.previous-box h2{
-    margin-top:0 !important;
-    margin-bottom:0 !important;
-    padding-bottom:5px !important;
-}
-
-.result-card{
-    margin-top:0 !important;
-    padding-top:0 !important;
-}
-
-.old-table{
-    margin-top:6px !important;
-}
-.live-btn{
-background:red !important;
-color:white !important;
-animation: liveBlink 1s infinite !important;
-}
-
-@keyframes liveBlink{
-0%{
-opacity:1;
-}
-50%{
-opacity:0.2;
-}
-100%{
-opacity:1;
-}
+footer {
+    text-align: center;
+    padding: 20px 10px;
+    color: #777;
+    font-size: 12px;
 }
