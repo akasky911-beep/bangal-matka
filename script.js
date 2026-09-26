@@ -1,1053 +1,313 @@
-/* =========================================================
-   BANGAL MATKA - MAIN SCRIPT
-   Home / Tips / Lucky Number / Old / Patti
-   ========================================================= */
+// Supabase Configuration
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_KEY = 'YOUR_ANON_KEY';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    setupDropdown();
+    setupNavigation();
+    setupLuckyWheel();
+    setupVoting();
+    
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+        const btn = document.getElementById('refreshBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        initApp().then(() => {
+            btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+        });
+    });
+});
 
-  /* =========================
-     BASIC HELPERS
-  ========================= */
+async function initApp() {
+    updateDate();
+    await Promise.all([
+        fetchSettings(),
+        fetchTodayInfo(),
+        fetchTips(),
+        fetchUpdates(),
+        fetchArchive(),
+        fetchPatti()
+    ]);
+}
 
-  const $ = (selector) => document.querySelector(selector);
-  const $$ = (selector) => document.querySelectorAll(selector);
+// UI Setup
+function updateDate() {
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', options);
+}
 
-  function getData(key, fallback) {
+function setupDropdown() {
+    const dropBtn = document.getElementById('moreBtn');
+    const dropdown = document.querySelector('.dropdown');
+    
+    dropBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+    });
+    
+    window.addEventListener('click', () => {
+        if (dropdown.classList.contains('show')) dropdown.classList.remove('show');
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') dropdown.classList.remove('show');
+    });
+}
+
+function setupNavigation() {
+    const navBtns = document.querySelectorAll('.nav-btn:not(.dropbtn), .dropdown-content a, .nav-btn-link, .footer-link');
+    const sections = document.querySelectorAll('.page-section');
+
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = btn.getAttribute('data-target');
+            if(!targetId) return;
+
+            // Remove active classes
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+            
+            // Add active to main nav if it's a top level button
+            if(btn.classList.contains('nav-btn')) btn.classList.add('active');
+            
+            // Show section
+            const targetSection = document.getElementById(targetId);
+            if(targetSection) targetSection.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+}
+
+// Database Fetching
+async function fetchSettings() {
     try {
-      const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : fallback;
-    } catch {
-      return fallback;
-    }
-  }
-
-  function setData(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-
-  /* =========================
-     LIVE CLOCK
-  ========================= */
-
-  function updateClock() {
-    const clock = document.getElementById("clock");
-
-    if (clock) {
-      const now = new Date();
-
-      clock.textContent = now.toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
-    }
-  }
-
-  updateClock();
-  setInterval(updateClock, 1000);
-
-
-  /* =========================
-     LIVE MOVING NEWS
-  ========================= */
-
-  let newsText = localStorage.getItem("liveNewsText") ||
-    "Welcome • Today's Result Updated • Check Latest Tips • Stay Updated";
-
-  function createNewsBar() {
-
-    if (document.getElementById("liveNewsBar")) return;
-
-    const header = document.querySelector("header");
-
-    if (!header) return;
-
-    const bar = document.createElement("div");
-
-    bar.id = "liveNewsBar";
-
-    bar.innerHTML = `
-      <span class="news-dot">●</span>
-      <div class="news-track">
-        <span>${newsText}</span>
-      </div>
-    `;
-
-    header.after(bar);
-
-    const style = document.createElement("style");
-
-    style.textContent = `
-      #liveNewsBar {
-        width: 100%;
-        overflow: hidden;
-        background: #ffffff;
-        border-top: 1px solid #eeeeee;
-        border-bottom: 1px solid #eeeeee;
-        display: flex;
-        align-items: center;
-        min-height: 38px;
-        font-family: Arial, sans-serif;
-      }
-
-      .news-dot {
-        color: #e53935;
-        font-size: 12px;
-        margin: 0 10px;
-        animation: newsBlink 1s infinite;
-      }
-
-      .news-track {
-        overflow: hidden;
-        white-space: nowrap;
-        flex: 1;
-      }
-
-      .news-track span {
-        display: inline-block;
-        padding-left: 100%;
-        animation: newsMove 18s linear infinite;
-        color: #222;
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      @keyframes newsMove {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-100%);
-        }
-      }
-
-      @keyframes newsBlink {
-        0%,100% { opacity: 1; }
-        50% { opacity: .25; }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  createNewsBar();
-
-
-  /* =========================
-     NAVIGATION
-  ========================= */
-
-  function hideAllPages() {
-
-    const pages = [
-      "homePage",
-      "tipsPage",
-      "luckyPage",
-      "oldPage",
-      "pattiPage"
-    ];
-
-    pages.forEach(id => {
-      const page = document.getElementById(id);
-      if (page) page.style.display = "none";
-    });
-  }
-
-
-  window.showHome = function () {
-    hideAllPages();
-
-    const page = document.getElementById("homePage");
-
-    if (page) page.style.display = "block";
-
-    updateTipsButton();
-  };
-
-
-  window.showTips = function () {
-    hideAllPages();
-
-    const page = document.getElementById("tipsPage");
-
-    if (page) {
-      page.style.display = "block";
-    } else {
-      createTipsPage();
-    }
-  };
-
-
-  window.showLucky = function () {
-    hideAllPages();
-
-    const page = document.getElementById("luckyPage");
-
-    if (page) {
-      page.style.display = "block";
-    } else {
-      createLuckyPage();
-    }
-  };
-
-
-  window.showOld = function () {
-    hideAllPages();
-
-    const page = document.getElementById("oldPage");
-
-    if (page) {
-      page.style.display = "block";
-    } else {
-      createOldPage();
-    }
-  };
-
-
-  window.showPatti = function () {
-    hideAllPages();
-
-    const page = document.getElementById("pattiPage");
-
-    if (page) {
-      page.style.display = "block";
-    } else {
-      createPattiPage();
-    }
-  };
-
-
-  /* =========================
-     DATE
-  ========================= */
-
-  function getToday() {
-    const now = new Date();
-
-    return now.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
-  }
-
-
-  /* =========================
-     TODAY RESULT
-  ========================= */
-
-  function updateTodayDate() {
-
-    const resultHeading =
-      document.querySelector("#homePage h2");
-
-    if (!resultHeading) return;
-
-    const resultData = getData("todayResult", null);
-
-    if (resultData && resultData.date) {
-
-      resultHeading.innerHTML =
-        `RESULT TODAY <span class="blink-dot">●</span>
-         <small>${resultData.date}</small>`;
-
-    } else {
-
-      resultHeading.innerHTML =
-        `RESULT TODAY <span class="blink-dot">●</span>
-         <small>${getToday()}</small>`;
-    }
-  }
-
-
-  /* =========================
-     BLINK DOT
-  ========================= */
-
-  function addBlinkStyle() {
-
-    if (document.getElementById("blinkDotStyle")) return;
-
-    const style = document.createElement("style");
-
-    style.id = "blinkDotStyle";
-
-    style.textContent = `
-      .blink-dot {
-        color: #e53935;
-        font-size: 11px;
-        margin-left: 5px;
-        animation: blinkResult 1s infinite;
-      }
-
-      @keyframes blinkResult {
-        0%,100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: .15;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  addBlinkStyle();
-  updateTodayDate();
-
-
-  /* =========================
-     TIPS SYSTEM
-  ========================= */
-
-  function updateTipsButton() {
-
-    const result = getData("todayResult", null);
-
-    const buttons = document.querySelectorAll("nav button");
-
-    buttons.forEach(button => {
-
-      const text = button.textContent.trim().toLowerCase();
-
-      if (
-        text.includes("bm home") ||
-        text === "home"
-      ) {
-
-        if (!result || !result.filled) {
-
-          button.textContent = "TIPS";
-          button.onclick = window.showTips;
-
+        const { data } = await supabase.from('settings').select('*');
+        let settings = {};
+        if (data) data.forEach(row => settings[row.key] = row.value);
+        
+        // Settings mappings
+        if(settings.news_ticker_active === 'true') {
+            document.getElementById('newsMarquee').textContent = settings.news_text || 'Welcome to Haryana Bazi';
         } else {
-
-          button.textContent = "HOME";
-          button.onclick = window.showHome;
+            document.getElementById('newsBarContainer').classList.add('hidden');
         }
-      }
+        
+        if(settings.about_text) document.getElementById('aboutDescription').innerHTML = `<p>${settings.about_text}</p>`;
+        
+        let contactHtml = '';
+        if(settings.contact_email) contactHtml += `<p><strong>Email:</strong> ${settings.contact_email}</p>`;
+        if(settings.contact_phone) contactHtml += `<p class="mt-8"><strong>Phone:</strong> ${settings.contact_phone}</p>`;
+        document.getElementById('contactContent').innerHTML = contactHtml || '<p>No contact information provided.</p>';
+        
+    } catch(e) { console.error("Settings load error"); }
+}
 
+async function fetchTodayInfo() {
+    const container = document.getElementById('todayInfoContent');
+    try {
+        const { data } = await supabase.from('daily_information').select('*').order('created_at', { ascending: false }).limit(1);
+        if (data && data.length > 0 && data[0].status === 'active') {
+            container.innerHTML = `<p>${data[0].content}</p>`;
+            document.getElementById('todayInfoTitle').textContent = data[0].title;
+            
+            let date = new Date(data[0].created_at);
+            document.getElementById('todayLastUpdated').textContent = `Last updated: ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+        } else {
+            container.innerHTML = `<div class="empty-state">Today's information has not been updated yet.<br>Please check again later.</div>`;
+            document.getElementById('todayLastUpdated').textContent = '';
+        }
+        container.classList.remove('loading');
+    } catch(e) { 
+        container.innerHTML = `<div class="empty-state">Unable to load information. Please try again.</div>`; 
+    }
+}
+
+async function fetchTips() {
+    try {
+        const { data } = await supabase.from('tips').select('*').eq('active', true).order('created_at', { ascending: false });
+        const container = document.getElementById('tipsContainer');
+        const preview = document.getElementById('homeTipPreview');
+        
+        if (data && data.length > 0) {
+            let html = data.map(tip => `
+                <div class="card">
+                    <h3 style="font-size:1.1rem">${tip.title}</h3>
+                    <p class="text-muted" style="font-size:0.8rem; margin-bottom:8px;">${new Date(tip.created_at).toLocaleDateString()}</p>
+                    <p>${tip.description}</p>
+                </div>
+            `).join('');
+            container.innerHTML = html;
+            preview.innerHTML = `<strong>${data[0].title}</strong><br><span class="text-muted">${data[0].description.substring(0, 50)}...</span>`;
+        } else {
+            container.innerHTML = `<div class="empty-state">No tips available at the moment.</div>`;
+            preview.innerHTML = 'No tips available.';
+        }
+        container.classList.remove('loading');
+        preview.classList.remove('loading');
+    } catch(e) {}
+}
+
+async function fetchUpdates() {
+    try {
+        const { data } = await supabase.from('updates').select('*').eq('active', true).order('created_at', { ascending: false });
+        const container = document.getElementById('updatesContainer');
+        if (data && data.length > 0) {
+            container.innerHTML = data.map(up => `
+                <div class="card">
+                    <h3 style="font-size:1.1rem">${up.title}</h3>
+                    <p class="text-muted" style="font-size:0.8rem; margin-bottom:8px;">${new Date(up.created_at).toLocaleString()}</p>
+                    <p>${up.description}</p>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = `<div class="empty-state">No new updates available.</div>`;
+        }
+        container.classList.remove('loading');
+    } catch(e) {}
+}
+
+async function fetchArchive() {
+    try {
+        const { data } = await supabase.from('old_information').select('*').order('date', { ascending: false });
+        const container = document.getElementById('archiveContainer');
+        if (data && data.length > 0) {
+            container.innerHTML = data.map(item => `
+                <div class="card">
+                    <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">${item.date}</div>
+                    <h3 style="margin-top:4px;">${item.title}</h3>
+                    <p class="mt-8">${item.information}</p>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = `<div class="empty-state">No previous information available.</div>`;
+        }
+        container.classList.remove('loading');
+    } catch(e) {}
+}
+
+function showPattiTableFallback() {
+    document.getElementById('pattiImageWrapper').classList.add('hidden');
+    document.getElementById('pattiTableContainer').classList.remove('hidden');
+}
+
+async function fetchPatti() {
+    try {
+        const { data } = await supabase.from('patti').select('*').order('id', { ascending: true });
+        const body = document.getElementById('pattiTableBody');
+        if (data && data.length > 0) {
+            body.innerHTML = data.map(row => `
+                <tr>
+                    <td><strong>${row.number}</strong></td>
+                    <td>${row.information}</td>
+                    <td>${row.description || '-'}</td>
+                </tr>
+            `).join('');
+        } else {
+            body.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No records available</td></tr>';
+        }
+    } catch(e) {}
+}
+
+// Features Logic
+function setupLuckyWheel() {
+    const wheel = document.getElementById('spinWheel');
+    let deg = 0;
+    
+    for(let i=0; i<10; i++) {
+        let el = document.createElement('div');
+        el.className = 'wheel-segment';
+        el.style.transform = `rotate(${i*36}deg) skewY(-54deg)`;
+        el.innerHTML = `<span style="transform: skewY(54deg) rotate(18deg) translateY(-100px); display:block;">${i}</span>`;
+        wheel.appendChild(el);
+    }
+
+    document.getElementById('spinBtn').addEventListener('click', function() {
+        if(localStorage.getItem('bazi_spin_used')) {
+            document.getElementById('spinLimitMsg').classList.remove('hidden');
+            return;
+        }
+        
+        this.disabled = true;
+        document.getElementById('spinResult').classList.add('hidden');
+        
+        let randomNum = Math.floor(Math.random() * 10);
+        let extraSpins = 5;
+        let segmentAngle = 36;
+        let targetAngle = (extraSpins * 360) + (360 - (randomNum * segmentAngle)) - (segmentAngle/2);
+        
+        deg += targetAngle;
+        wheel.style.transform = `rotate(${deg}deg)`;
+        
+        setTimeout(() => {
+            document.getElementById('spinResult').classList.remove('hidden');
+            document.getElementById('resultNumber').textContent = randomNum;
+            localStorage.setItem('bazi_spin_used', 'true');
+        }, 4000);
     });
-  }
+}
 
-
-  /* =========================
-     CREATE TIPS PAGE
-  ========================= */
-
-  function createTipsPage() {
-
-    let page = document.getElementById("tipsPage");
-
-    if (page) {
-      page.style.display = "block";
-      return;
+function setupVoting() {
+    const grid = document.getElementById('votingGrid');
+    let selectedNum = null;
+    
+    grid.innerHTML = '';
+    for(let i=0; i<=9; i++) {
+        let btn = document.createElement('button');
+        btn.className = 'vote-btn';
+        btn.textContent = i;
+        btn.onclick = () => {
+            document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedNum = i;
+            document.getElementById('submitVoteBtn').disabled = false;
+            document.getElementById('voteMessage').classList.add('hidden');
+        };
+        grid.appendChild(btn);
     }
 
-    page = document.createElement("section");
-
-    page.id = "tipsPage";
-
-    page.innerHTML = `
-      <div class="page-box">
-
-        <h2>DAILY TIPS</h2>
-
-        <div class="vote-box">
-
-          <h3>VOTE TABLE</h3>
-
-          <div id="numberButtons" class="number-buttons"></div>
-
-          <button id="confirmVote" class="main-action">
-            VOTE CONFIRM
-          </button>
-
-          <p id="voteMessage"></p>
-
-        </div>
-
-        <div class="vote-results">
-
-          <h3>VOTE RESULT</h3>
-
-          <div id="voteTable"></div>
-
-        </div>
-
-      </div>
-    `;
-
-    document.body.appendChild(page);
-
-    addTipsStyles();
-
-    createVoteNumbers();
-
-    updateVoteTable();
-  }
-
-
-  /* =========================
-     VOTE NUMBERS
-  ========================= */
-
-  let selectedNumber = null;
-
-  function createVoteNumbers() {
-
-    const container =
-      document.getElementById("numberButtons");
-
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    for (let i = 0; i <= 9; i++) {
-
-      const button = document.createElement("button");
-
-      button.className = "round-number";
-      button.textContent = i;
-
-      button.onclick = () => {
-
-        selectedNumber = i;
-
-        document
-          .querySelectorAll(".round-number")
-          .forEach(btn => btn.classList.remove("selected"));
-
-        button.classList.add("selected");
-      };
-
-      container.appendChild(button);
-    }
-
-
-    const confirm =
-      document.getElementById("confirmVote");
-
-    if (confirm) {
-
-      confirm.onclick = () => {
-
-        if (selectedNumber === null) {
-
-          document.getElementById("voteMessage").textContent =
-            "Please select a number first.";
-
-          return;
+    document.getElementById('submitVoteBtn').onclick = async () => {
+        if(selectedNum === null) {
+            document.getElementById('voteMessage').textContent = "Please select a number first.";
+            document.getElementById('voteMessage').classList.remove('hidden');
+            return;
+        }
+        
+        if(localStorage.getItem('bazi_voted_today') === new Date().toDateString()) {
+             document.getElementById('voteMessage').textContent = "You have already voted today.";
+             document.getElementById('voteMessage').classList.remove('hidden');
+             return;
         }
 
-        const votes = getData("votes", {});
-
-        if (!votes[selectedNumber]) {
-          votes[selectedNumber] = 0;
+        document.getElementById('submitVoteBtn').disabled = true;
+        try {
+            await supabase.from('votes').insert([{ number_voted: selectedNum }]);
+            document.getElementById('voteMessage').textContent = "Vote recorded. Thank you.";
+            document.getElementById('voteMessage').classList.remove('hidden');
+            localStorage.setItem('bazi_voted_today', new Date().toDateString());
+            fetchVotingStats();
+        } catch (e) {
+            document.getElementById('submitVoteBtn').disabled = false;
         }
-
-        votes[selectedNumber]++;
-
-        setData("votes", votes);
-
-        localStorage.setItem(
-          "lastVote",
-          new Date().toISOString()
-        );
-
-        document.getElementById("voteMessage").textContent =
-          "Vote recorded successfully.";
-
-        updateVoteTable();
-      };
-    }
-  }
-
-
-  /* =========================
-     VOTE TABLE
-  ========================= */
-
-  function updateVoteTable() {
-
-    const tableContainer =
-      document.getElementById("voteTable");
-
-    if (!tableContainer) return;
-
-    const votes = getData("votes", {});
-
-    let total = 0;
-
-    for (let i = 0; i <= 9; i++) {
-      total += Number(votes[i] || 0);
-    }
-
-    let html = `
-      <table class="vote-result-table">
-
-        <thead>
-          <tr>
-            <th>Number</th>
-            <th>Votes</th>
-            <th>Percentage</th>
-          </tr>
-        </thead>
-
-        <tbody>
-    `;
-
-    for (let i = 0; i <= 9; i++) {
-
-      const count = Number(votes[i] || 0);
-
-      const percentage =
-        total > 0
-          ? ((count / total) * 100).toFixed(1)
-          : "0.0";
-
-      html += `
-        <tr>
-          <td>${i}</td>
-          <td>${count}</td>
-          <td>${percentage}%</td>
-        </tr>
-      `;
-    }
-
-    html += `
-        </tbody>
-
-        <tfoot>
-          <tr>
-            <th>Total</th>
-            <th>${total}</th>
-            <th>100%</th>
-          </tr>
-        </tfoot>
-
-      </table>
-    `;
-
-    tableContainer.innerHTML = html;
-  }
-
-
-  /* =========================
-     LUCKY NUMBER
-  ========================= */
-
-  function createLuckyPage() {
-
-    let page = document.getElementById("luckyPage");
-
-    if (page) {
-      page.style.display = "block";
-      return;
-    }
-
-    page = document.createElement("section");
-
-    page.id = "luckyPage";
-
-    page.innerHTML = `
-      <div class="page-box lucky-box">
-
-        <h2>LUCKY NUMBER</h2>
-
-        <div class="wheel-wrapper">
-
-          <div class="wheel-arrow">▼</div>
-
-          <div id="spinWheel" class="spin-wheel">
-
-            <div class="wheel-number n0">0</div>
-            <div class="wheel-number n1">1</div>
-            <div class="wheel-number n2">2</div>
-            <div class="wheel-number n3">3</div>
-            <div class="wheel-number n4">4</div>
-            <div class="wheel-number n5">5</div>
-            <div class="wheel-number n6">6</div>
-            <div class="wheel-number n7">7</div>
-            <div class="wheel-number n8">8</div>
-            <div class="wheel-number n9">9</div>
-
-          </div>
-
-        </div>
-
-        <button id="spinButton" class="main-action">
-          SPIN
-        </button>
-
-        <div id="luckyResult"></div>
-
-      </div>
-    `;
-
-    document.body.appendChild(page);
-
-    addLuckyStyles();
-
-    setupSpin();
-  }
-
-
-  /* =========================
-     SPIN SYSTEM
-  ========================= */
-
-  function setupSpin() {
-
-    const spinButton =
-      document.getElementById("spinButton");
-
-    if (!spinButton) return;
-
-    spinButton.onclick = () => {
-
-      if (localStorage.getItem("luckyAlreadySpun") === "yes") {
-
-        document.getElementById("luckyResult").innerHTML =
-          `<p class="already-message">
-            You have already used your spin.
-          </p>`;
-
-        return;
-      }
-
-      const wheel =
-        document.getElementById("spinWheel");
-
-      const result =
-        Math.floor(Math.random() * 10);
-
-      const extraRotation =
-        360 * 6 + result * 36;
-
-      wheel.style.transform =
-        `rotate(${extraRotation}deg)`;
-
-      playSpinSound();
-
-      spinButton.disabled = true;
-
-      setTimeout(() => {
-
-        localStorage.setItem(
-          "luckyAlreadySpun",
-          "yes"
-        );
-
-        playWinSound();
-
-        document.getElementById("luckyResult").innerHTML = `
-          <div class="big-lucky-result">
-            ${result}
-          </div>
-
-          <div class="result-text">
-            YOUR LUCKY NUMBER
-          </div>
-        `;
-
-      }, 4500);
     };
-  }
+    fetchVotingStats();
+}
 
-
-  /* =========================
-     SIMPLE SOUND
-  ========================= */
-
-  function playSpinSound() {
-
+async function fetchVotingStats() {
     try {
-
-      const audioContext =
-        new (window.AudioContext ||
-          window.webkitAudioContext)();
-
-      const oscillator =
-        audioContext.createOscillator();
-
-      const gain =
-        audioContext.createGain();
-
-      oscillator.type = "sine";
-
-      oscillator.frequency.setValueAtTime(
-        300,
-        audioContext.currentTime
-      );
-
-      oscillator.frequency.exponentialRampToValueAtTime(
-        900,
-        audioContext.currentTime + 0.3
-      );
-
-      gain.gain.setValueAtTime(
-        0.15,
-        audioContext.currentTime
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        audioContext.currentTime + 0.3
-      );
-
-      oscillator.connect(gain);
-      gain.connect(audioContext.destination);
-
-      oscillator.start();
-
-      oscillator.stop(
-        audioContext.currentTime + 0.3
-      );
-
-    } catch {}
-  }
-
-
-  function playWinSound() {
-
-    try {
-
-      const audioContext =
-        new (window.AudioContext ||
-          window.webkitAudioContext)();
-
-      const frequencies = [
-        523,
-        659,
-        784
-      ];
-
-      frequencies.forEach((frequency, index) => {
-
-        const oscillator =
-          audioContext.createOscillator();
-
-        const gain =
-          audioContext.createGain();
-
-        oscillator.frequency.value = frequency;
-
-        gain.gain.value = 0.12;
-
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
-
-        oscillator.start(
-          audioContext.currentTime + index * 0.15
-        );
-
-        oscillator.stop(
-          audioContext.currentTime +
-          0.3 +
-          index * 0.15
-        );
-
-      });
-
-    } catch {}
-  }
-
-
-  /* =========================
-     OLD RESULT
-  ========================= */
-
-  function createOldPage() {
-
-    let page = document.getElementById("oldPage");
-
-    if (page) {
-      page.style.display = "block";
-      return;
-    }
-
-    page = document.createElement("section");
-
-    page.id = "oldPage";
-
-    page.innerHTML = `
-      <div class="page-box">
-
-        <h2>OLD RESULT</h2>
-
-        <div id="oldResultsContainer">
-          Loading old results...
-        </div>
-
-      </div>
-    `;
-
-    document.body.appendChild(page);
-
-    updateOldResults();
-  }
-
-
-  function updateOldResults() {
-
-    const container =
-      document.getElementById("oldResultsContainer");
-
-    if (!container) return;
-
-    const oldResults =
-      getData("oldResults", []);
-
-    if (!oldResults.length) {
-
-      container.innerHTML =
-        "<p>No old result available.</p>";
-
-      return;
-    }
-
-    let html = "";
-
-    oldResults.forEach(month => {
-
-      html += `
-        <div class="old-month">
-
-          <h3>${month.month}</h3>
-
-          <p>${month.result || "No result"}</p>
-
-        </div>
-      `;
-    });
-
-    container.innerHTML = html;
-  }
-
-
-  /* =========================
-     PATTI
-  ========================= */
-
-  function createPattiPage() {
-
-    let page = document.getElementById("pattiPage");
-
-    if (page) {
-      page.style.display = "block";
-      return;
-    }
-
-    page = document.createElement("section");
-
-    page.id = "pattiPage";
-
-    page.innerHTML = `
-      <div class="page-box">
-
-        <h2>PATTI</h2>
-
-        <div class="patti-image-box">
-
-          <img
-            src="patti.png"
-            alt="Patti"
-            onerror="this.style.display='none'"
-          >
-
-        </div>
-
-      </div>
-    `;
-
-    document.body.appendChild(page);
-  }
-
-
-  /* =========================
-     TIPS STYLES
-  ========================= */
-
-  function addTipsStyles() {
-
-    if (document.getElementById("tipsStyles")) return;
-
-    const style = document.createElement("style");
-
-    style.id = "tipsStyles";
-
-    style.textContent = `
-
-      .page-box {
-        background: #fff;
-        padding: 20px;
-        margin: 15px auto;
-        max-width: 900px;
-        border-radius: 12px;
-        box-sizing: border-box;
-      }
-
-      .page-box h2 {
-        text-align: center;
-        color: #222;
-      }
-
-      .vote-box {
-        text-align: center;
-      }
-
-      .number-buttons {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 12px;
-        margin: 20px 0;
-      }
-
-      .round-number {
-        width: 58px;
-        height: 58px;
-        margin: auto;
-        border-radius: 50%;
-        border: 2px solid #ddd;
-        background: #fff;
-        font-size: 21px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      .round-number.selected {
-        background: #222;
-        color: #fff;
-        border-color: #222;
-        transform: scale(1.08);
-      }
-
-      .main-action {
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        background: #222;
-        color: #fff;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      .vote-result-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-      }
-
-      .vote-result-table th,
-      .vote-result-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: center;
-      }
-
-      .vote-result-table th {
-        background: #f5f5f5;
-      }
-
-      .old-month {
-        border: 1px solid #ddd;
-        padding: 15px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-      }
-
-      .patti-image-box img {
-        width: 100%;
-        max-width: 100%;
-        display: block;
-      }
-
-      @media(max-width:600px) {
-
-        .number-buttons {
-          grid-template-columns: repeat(5, 1fr);
-          gap: 8px;
+        const { data } = await supabase.from('votes').select('number_voted');
+        if(data && data.length > 0) {
+            let counts = Array(10).fill(0);
+            data.forEach(v => counts[v.number_voted]++);
+            let total = data.length;
+            
+            document.getElementById('votingStats').classList.remove('hidden');
+            document.getElementById('statsContainer').innerHTML = counts.map((count, index) => {
+                let pct = ((count/total)*100).toFixed(1);
+                return count > 0 ? `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid var(--border-color);"><span>Number ${index}</span> <strong>${count} (${pct}%)</strong></div>` : '';
+            }).join('');
         }
-
-        .round-number {
-          width: 48px;
-          height: 48px;
-        }
-
-      }
-
-    `;
-
-    document.head.appendChild(style);
-  }
-
-
-  /* =========================
-     LUCKY STYLES
-  ========================= */
-
-  function addLuckyStyles() {
-
-    if (document.getElementById("luckyStyles")) return;
-
-    const style = document.createElement("style");
-
-    style.id = "luckyStyles";
-
-    style.textContent = `
-
-      .lucky-box {
-        text-align: center;
-      }
-
-      .wheel-wrapper {
-        position: relative;
-        width: 300px;
-        height: 300px;
-        margin: 30px auto;
-      }
-
-      .wheel-arrow {
-        position: absolute;
-        top: -18px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 5;
-        font-size: 30px;
-      }
-
-      .spin-wheel {
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        position: relative;
-        border: 8px solid #222;
-        background:
-          conic-gradient(
-            #ffffff 0deg 36deg,
-            #eeeeee 36deg 72deg,
-            #ffffff 72deg 108deg,
-            #eeeeee 108deg 144deg,
-            #ffffff 144deg 180deg,
-            #eeeeee 180deg 216deg,
-            #ffffff 216deg 252deg,
-            #eeeeee 252deg 288deg,
-            #ffffff 288deg 324deg,
-            #eeeeee 324deg 360deg
-          );
-        transition: transform 4.5s cubic-bezier(.17,.67,.12,.99);
-      }
-
-      .wheel-number {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        font-size: 25px;
-        font-weight: bold;
-        transform-origin: 0 0;
-      }
-
-      .n0 { transform: rotate(0deg) translate(125px) rotate(0deg); }
-      .n1 { transform: rotate(36deg) translate(125px) rota
+    } catch (e) {}
+}
