@@ -1,24 +1,25 @@
 /* =========================================================
    HARYANA BAZI
    MAIN WEBSITE JAVASCRIPT
-   ========================================================= */
+========================================================= */
 
 
 /* =========================================================
    DEFAULT DATA
-   ========================================================= */
+========================================================= */
 
 const defaultData = {
 
   settings: {
 
-    siteName: "Haryana Bazi",
+    siteName:
+      "Haryana Bazi",
 
     news:
-      "Welcome to Haryana Bazi • Daily Updates • Latest Information",
+      "Welcome to Haryana Bazi • Daily Information • Latest Updates",
 
     footerBio:
-      "Simple, clean and mobile-friendly information and entertainment website.",
+      "Simple, clean and mobile-friendly information website.",
 
     aboutTitle:
       "About Haryana Bazi",
@@ -163,10 +164,19 @@ const defaultData = {
 
 /* =========================================================
    STORAGE
-   ========================================================= */
+========================================================= */
 
 const STORAGE_KEY =
   "haryanaBaziWebsiteData";
+
+
+function cloneDefaultData() {
+
+  return JSON.parse(
+    JSON.stringify(defaultData)
+  );
+
+}
 
 
 function loadData() {
@@ -174,20 +184,25 @@ function loadData() {
   try {
 
     const saved =
-      localStorage.getItem(STORAGE_KEY);
+      localStorage.getItem(
+        STORAGE_KEY
+      );
+
 
     if (!saved) {
 
-      return structuredClone(defaultData);
+      return cloneDefaultData();
 
     }
+
 
     const parsed =
       JSON.parse(saved);
 
+
     return {
 
-      ...structuredClone(defaultData),
+      ...cloneDefaultData(),
 
       ...parsed,
 
@@ -196,6 +211,14 @@ function loadData() {
         ...defaultData.settings,
 
         ...(parsed.settings || {})
+
+      },
+
+      today: {
+
+        ...defaultData.today,
+
+        ...(parsed.today || {})
 
       }
 
@@ -210,7 +233,7 @@ function loadData() {
       error
     );
 
-    return structuredClone(defaultData);
+    return cloneDefaultData();
 
   }
 
@@ -221,76 +244,150 @@ let siteData =
   loadData();
 
 
-/* =========================================================
-   SAVE DATA
-   ========================================================= */
-
 function saveData() {
 
-  localStorage.setItem(
+  try {
 
-    STORAGE_KEY,
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(siteData)
+    );
 
-    JSON.stringify(siteData)
+  }
 
-  );
+  catch (error) {
+
+    console.error(
+      "Data saving error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+
+    return "";
+
+  }
+
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
 
 }
 
 
 /* =========================================================
    PAGE NAVIGATION
-   ========================================================= */
+========================================================= */
 
 const pages =
-  document.querySelectorAll(".page");
+  document.querySelectorAll(
+    ".page"
+  );
 
 
 const navItems =
-  document.querySelectorAll("[data-page]");
+  document.querySelectorAll(
+    "[data-page]"
+  );
 
 
 function showPage(pageName) {
 
-  pages.forEach(page => {
+  pages.forEach(
+    function(page) {
 
-    page.classList.remove("active");
+      page.classList.remove(
+        "active"
+      );
 
-  });
+    }
+  );
 
 
   const target =
-    document.getElementById(pageName);
+    document.getElementById(
+      pageName
+    );
 
 
-  if (target) {
+  if (!target) {
 
-    target.classList.add("active");
+    return;
 
   }
 
 
-  document
-    .querySelectorAll(".nav-item")
-    .forEach(button => {
-
-      button.classList.remove("active");
-
-    });
+  target.classList.add(
+    "active"
+  );
 
 
   document
     .querySelectorAll(
-      `.nav-item[data-page="${pageName}"]`
+      ".nav-item"
     )
-    .forEach(button => {
+    .forEach(
+      function(item) {
 
-      button.classList.add("active");
+        item.classList.remove(
+          "active"
+        );
 
-    });
+      }
+    );
 
 
-  closeDropdown();
+  const matchingNav =
+    document.querySelector(
+      `.nav-item[data-page="${pageName}"]`
+    );
+
+
+  if (matchingNav) {
+
+    matchingNav.classList.add(
+      "active"
+    );
+
+  }
+
+
+  const moreDropdown =
+    document.getElementById(
+      "moreDropdown"
+    );
+
+
+  if (moreDropdown) {
+
+    moreDropdown.classList.remove(
+      "open"
+    );
+
+  }
 
 
   window.scrollTo({
@@ -304,81 +401,79 @@ function showPage(pageName) {
 }
 
 
-navItems.forEach(button => {
+/* =========================================================
+   ALL PAGE BUTTONS
+========================================================= */
 
-  button.addEventListener(
-    "click",
-    function () {
+navItems.forEach(
+  function(button) {
 
-      const page =
-        this.dataset.page;
+    button.addEventListener(
+      "click",
+      function() {
 
-      if (page) {
+        const page =
+          this.dataset.page;
 
-        showPage(page);
+        if (page) {
+
+          showPage(page);
+
+        }
 
       }
+    );
 
-    }
-  );
-
-});
+  }
+);
 
 
 /* =========================================================
-   DROPDOWN
-   ========================================================= */
+   MORE DROPDOWN
+========================================================= */
 
 const moreBtn =
-  document.getElementById("moreBtn");
+  document.getElementById(
+    "moreBtn"
+  );
 
 
-const moreMenu =
-  document.getElementById("moreMenu");
+const moreDropdown =
+  document.getElementById(
+    "moreDropdown"
+  );
 
 
-if (moreBtn) {
+if (moreBtn && moreDropdown) {
 
   moreBtn.addEventListener(
     "click",
-    function (event) {
+    function(event) {
 
       event.stopPropagation();
 
-      const dropdown =
-        this.closest(".dropdown");
-
-      dropdown.classList.toggle("open");
+      moreDropdown.classList.toggle(
+        "open"
+      );
 
     }
   );
-
-}
-
-
-function closeDropdown() {
-
-  const dropdown =
-    document.querySelector(".dropdown");
-
-  if (dropdown) {
-
-    dropdown.classList.remove("open");
-
-  }
 
 }
 
 
 document.addEventListener(
   "click",
-  function (event) {
+  function(event) {
 
     if (
-      !event.target.closest(".dropdown")
+      moreDropdown &&
+      !moreDropdown.contains(event.target)
     ) {
 
-      closeDropdown();
+      moreDropdown.classList.remove(
+        "open"
+      );
 
     }
 
@@ -388,12 +483,14 @@ document.addEventListener(
 
 /* =========================================================
    DATE
-   ========================================================= */
+========================================================= */
 
 function updateDate() {
 
   const dateElement =
-    document.getElementById("todayDate");
+    document.getElementById(
+      "todayDate"
+    );
 
 
   if (!dateElement) {
@@ -425,8 +522,8 @@ updateDate();
 
 
 /* =========================================================
-   SETTINGS
-   ========================================================= */
+   SITE SETTINGS
+========================================================= */
 
 function renderSettings() {
 
@@ -434,12 +531,24 @@ function renderSettings() {
     siteData.settings;
 
 
-  document.title =
-    settings.siteName;
+  const brandName =
+    document.getElementById(
+      "brandName"
+    );
+
+
+  if (brandName) {
+
+    brandName.textContent =
+      settings.siteName;
+
+  }
 
 
   const ticker =
-    document.getElementById("newsTicker");
+    document.getElementById(
+      "newsTicker"
+    );
 
 
   if (ticker) {
@@ -451,7 +560,9 @@ function renderSettings() {
 
 
   const footerBio =
-    document.getElementById("footerBio");
+    document.getElementById(
+      "footerBio"
+    );
 
 
   if (footerBio) {
@@ -463,7 +574,9 @@ function renderSettings() {
 
 
   const aboutTitle =
-    document.getElementById("aboutTitle");
+    document.getElementById(
+      "aboutTitle"
+    );
 
 
   if (aboutTitle) {
@@ -474,20 +587,10 @@ function renderSettings() {
   }
 
 
-  const aboutContent =
-    document.getElementById("aboutContent");
-
-
-  if (aboutContent) {
-
-    aboutContent.textContent =
-      settings.about;
-
-  }
-
-
   const contactTitle =
-    document.getElementById("contactTitle");
+    document.getElementById(
+      "contactTitle"
+    );
 
 
   if (contactTitle) {
@@ -498,46 +601,56 @@ function renderSettings() {
   }
 
 
-  const contactContent =
-    document.getElementById("contactContent");
+  const copyright =
+    document.getElementById(
+      "copyright"
+    );
 
 
-  if (contactContent) {
+  if (copyright) {
 
-    contactContent.textContent =
-      settings.contact;
+    copyright.textContent =
+      "© " +
+      new Date().getFullYear() +
+      " " +
+      settings.siteName;
 
   }
 
 }
 
 
+renderSettings();
+
+
 /* =========================================================
    TODAY
-   ========================================================= */
+========================================================= */
 
 function renderToday() {
 
-  const today =
-    siteData.today;
-
-
   const title =
-    document.getElementById("todayTitle");
+    document.getElementById(
+      "todayTitle"
+    );
 
 
   const content =
-    document.getElementById("todayContent");
+    document.getElementById(
+      "todayContent"
+    );
 
 
   const updated =
-    document.getElementById("todayUpdated");
+    document.getElementById(
+      "todayUpdated"
+    );
 
 
   if (title) {
 
     title.textContent =
-      today.title ||
+      siteData.today.title ||
       siteData.settings.todayTitle;
 
   }
@@ -546,7 +659,7 @@ function renderToday() {
   if (content) {
 
     content.textContent =
-      today.content ||
+      siteData.today.content ||
       "Today's information has not been updated yet.";
 
   }
@@ -554,17 +667,18 @@ function renderToday() {
 
   if (updated) {
 
-    if (today.updated) {
+    if (siteData.today.updated) {
 
       updated.textContent =
-        "Last updated: " +
-        today.updated;
+        "Updated: " +
+        siteData.today.updated;
 
     }
 
     else {
 
-      updated.textContent = "";
+      updated.textContent =
+        "";
 
     }
 
@@ -573,25 +687,25 @@ function renderToday() {
 }
 
 
+renderToday();
+
+
 /* =========================================================
    TIPS
-   ========================================================= */
+========================================================= */
 
 function renderTips() {
 
-  const list =
-    document.getElementById("tipsList");
-
-
   const preview =
-    document.getElementById("tipsPreview");
+    document.getElementById(
+      "tipsPreview"
+    );
 
 
-  if (!list) {
-
-    return;
-
-  }
+  const list =
+    document.getElementById(
+      "tipsList"
+    );
 
 
   const tips =
@@ -600,213 +714,21 @@ function renderTips() {
       : [];
 
 
-  if (tips.length === 0) {
-
-    list.innerHTML =
-      emptyMessage(
-        "No tips available right now."
-      );
-
-    if (preview) {
-
-      preview.innerHTML =
-        emptyMessage(
-          "No tips available right now."
-        );
-
-    }
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    tips.map(
-      (tip, index) => {
-
-        return `
-
-          <article class="item-card">
-
-            <div class="meta">
-
-              ${escapeHTML(
-                tip.date || ""
-              )}
-
-            </div>
-
-            <h3>
-
-              ${escapeHTML(
-                tip.title ||
-                `Tip ${index + 1}`
-              )}
-
-            </h3>
-
-            <p>
-
-              ${escapeHTML(
-                tip.description ||
-                ""
-              )}
-
-            </p>
-
-          </article>
-
-        `;
-
-      }
-    ).join("");
-
-
   if (preview) {
 
-    const first =
-      tips[0];
+    if (tips.length === 0) {
 
-
-    preview.innerHTML = `
-
-      <div class="item-card">
-
-        <div class="meta">
-
-          ${escapeHTML(
-            first.date || ""
-          )}
-
-        </div>
-
-        <h3>
-
-          ${escapeHTML(
-            first.title ||
-            "Latest Tip"
-          )}
-
-        </h3>
-
-        <p>
-
-          ${escapeHTML(
-            first.description ||
-            ""
-          )}
-
-        </p>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-/* =========================================================
-   UPDATES
-   ========================================================= */
-
-function renderUpdates() {
-
-  const list =
-    document.getElementById("updatesList");
-
-
-  const preview =
-    document.getElementById(
-      "updatesPreview"
-    );
-
-
-  const updates =
-    Array.isArray(siteData.updates)
-      ? siteData.updates
-      : [];
-
-
-  if (list) {
-
-    if (updates.length === 0) {
-
-      list.innerHTML =
-        emptyMessage(
-          "No updates available."
-        );
+      preview.innerHTML =
+        `<div class="item-card">
+          <p>No tips available.</p>
+        </div>`;
 
     }
 
     else {
 
-      list.innerHTML =
-        updates.map(
-          update => {
-
-            return `
-
-              <article class="item-card">
-
-                <div class="meta">
-
-                  ${escapeHTML(
-                    formatDateTime(
-                      update.date,
-                      update.time
-                    )
-                  )}
-
-                </div>
-
-                <h3>
-
-                  ${escapeHTML(
-                    update.title ||
-                    "Update"
-                  )}
-
-                </h3>
-
-                <p>
-
-                  ${escapeHTML(
-                    update.description ||
-                    ""
-                  )}
-
-                </p>
-
-              </article>
-
-            `;
-
-          }
-        ).join("");
-
-    }
-
-  }
-
-
-  if (preview) {
-
-    if (updates.length === 0) {
-
-      preview.innerHTML =
-        emptyMessage(
-          "No updates available."
-        );
-
-    }
-
-    else {
-
-      const first =
-        updates[0];
+      const tip =
+        tips[0];
 
 
       preview.innerHTML = `
@@ -814,32 +736,15 @@ function renderUpdates() {
         <div class="item-card">
 
           <div class="meta">
-
-            ${escapeHTML(
-              formatDateTime(
-                first.date,
-                first.time
-              )
-            )}
-
+            ${escapeHTML(tip.date || "")}
           </div>
 
           <h3>
-
-            ${escapeHTML(
-              first.title ||
-              "Latest Update"
-            )}
-
+            ${escapeHTML(tip.title || "Information")}
           </h3>
 
           <p>
-
-            ${escapeHTML(
-              first.description ||
-              ""
-            )}
-
+            ${escapeHTML(tip.description || "")}
           </p>
 
         </div>
@@ -850,78 +755,41 @@ function renderUpdates() {
 
   }
 
-}
+
+  if (list) {
+
+    list.innerHTML = "";
 
 
-/* =========================================================
-   OLD INFORMATION
-   ========================================================= */
+    if (tips.length === 0) {
 
-function renderOld() {
+      list.innerHTML =
+        `<div class="card">
+          No tips available.
+        </div>`;
 
-  const list =
-    document.getElementById(
-      "oldList"
-    );
+      return;
 
-
-  if (!list) {
-
-    return;
-
-  }
+    }
 
 
-  const old =
-    Array.isArray(siteData.old)
-      ? siteData.old
-      : [];
+    tips.forEach(
+      function(tip) {
 
-
-  if (old.length === 0) {
-
-    list.innerHTML =
-      emptyMessage(
-        "No old information available."
-      );
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    old.map(
-      item => {
-
-        return `
+        list.innerHTML += `
 
           <article class="item-card">
 
             <div class="meta">
-
-              ${escapeHTML(
-                item.date || ""
-              )}
-
+              ${escapeHTML(tip.date || "")}
             </div>
 
             <h3>
-
-              ${escapeHTML(
-                item.title ||
-                "Previous Information"
-              )}
-
+              ${escapeHTML(tip.title || "Information")}
             </h3>
 
             <p>
-
-              ${escapeHTML(
-                item.description ||
-                ""
-              )}
-
+              ${escapeHTML(tip.description || "")}
             </p>
 
           </article>
@@ -929,63 +797,203 @@ function renderOld() {
         `;
 
       }
-    ).join("");
+    );
+
+  }
 
 }
+
+
+renderTips();
 
 
 /* =========================================================
-   OLD SEARCH
-   ========================================================= */
+   UPDATES
+========================================================= */
 
-const oldSearch =
-  document.getElementById(
-    "oldSearch"
-  );
+function renderUpdates() {
 
-
-if (oldSearch) {
-
-  oldSearch.addEventListener(
-    "input",
-    function () {
-
-      const query =
-        this.value
-          .trim()
-          .toLowerCase();
+  const preview =
+    document.getElementById(
+      "updatesPreview"
+    );
 
 
-      const items =
-        document.querySelectorAll(
-          "#oldList .item-card"
-        );
+  const list =
+    document.getElementById(
+      "updatesList"
+    );
 
 
-      items.forEach(item => {
+  const updates =
+    Array.isArray(siteData.updates)
+      ? siteData.updates
+      : [];
 
-        const text =
-          item.textContent
-            .toLowerCase();
 
+  if (preview) {
 
-        item.style.display =
-          !query ||
-          text.includes(query)
-            ? ""
-            : "none";
+    if (updates.length === 0) {
 
-      });
+      preview.innerHTML =
+        `<div class="item-card">
+          <p>No updates available.</p>
+        </div>`;
 
     }
-  );
+
+    else {
+
+      const update =
+        updates[0];
+
+
+      preview.innerHTML = `
+
+        <div class="item-card">
+
+          <div class="meta">
+            ${escapeHTML(update.date || "")}
+            ${update.time ? " • " + escapeHTML(update.time) : ""}
+          </div>
+
+          <h3>
+            ${escapeHTML(update.title || "Update")}
+          </h3>
+
+          <p>
+            ${escapeHTML(update.description || "")}
+          </p>
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+
+  if (list) {
+
+    list.innerHTML = "";
+
+
+    if (updates.length === 0) {
+
+      list.innerHTML =
+        `<div class="card">
+          No updates available.
+        </div>`;
+
+      return;
+
+    }
+
+
+    updates.forEach(
+      function(update) {
+
+        list.innerHTML += `
+
+          <article class="item-card">
+
+            <div class="meta">
+
+              ${escapeHTML(update.date || "")}
+
+              ${
+                update.time
+                ? " • " + escapeHTML(update.time)
+                : ""
+              }
+
+            </div>
+
+            <h3>
+              ${escapeHTML(update.title || "Update")}
+            </h3>
+
+            <p>
+              ${escapeHTML(update.description || "")}
+            </p>
+
+          </article>
+
+        `;
+
+      }
+    );
+
+  }
 
 }
+
+
+renderUpdates();
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+function renderAbout() {
+
+  const content =
+    document.getElementById(
+      "aboutContent"
+    );
+
+
+  if (!content) {
+
+    return;
+
+  }
+
+
+  content.textContent =
+    siteData.settings.about ||
+    "";
+
+}
+
+
+renderAbout();
+
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+function renderContact() {
+
+  const content =
+    document.getElementById(
+      "contactContent"
+    );
+
+
+  if (!content) {
+
+    return;
+
+  }
+
+
+  content.textContent =
+    siteData.settings.contact ||
+    "";
+
+}
+
+
+renderContact();
 
 
 /* =========================================================
    PATTI
-   ========================================================= */
+========================================================= */
 
 function renderPatti() {
 
@@ -1008,139 +1016,408 @@ function renderPatti() {
       : [];
 
 
-  table.innerHTML =
-    patti.map(
-      item => {
-
-        return `
-
-          <tr>
-
-            <td>
-
-              ${escapeHTML(
-                item.number || ""
-              )}
-
-            </td>
-
-            <td>
-
-              ${escapeHTML(
-                item.information ||
-                ""
-              )}
-
-            </td>
-
-            <td>
-
-              ${escapeHTML(
-                item.description ||
-                ""
-              )}
-
-            </td>
-
-          </tr>
-
-        `;
-
-      }
-    ).join("");
-
-}
+  table.innerHTML = "";
 
 
-/* =========================================================
-   VOTING
-   ========================================================= */
+  if (patti.length === 0) {
 
-let selectedVote =
-  null;
+    table.innerHTML = `
 
+      <tr>
 
-let votes =
-  loadVotes();
+        <td colspan="3">
+          No reference information available.
+        </td>
 
+      </tr>
 
-function loadVotes() {
-
-  try {
-
-    const saved =
-      localStorage.getItem(
-        "haryanaBaziVotes"
-      );
-
-
-    if (saved) {
-
-      const parsed =
-        JSON.parse(saved);
-
-
-      if (
-        Array.isArray(parsed) &&
-        parsed.length === 10
-      ) {
-
-        return parsed;
-
-      }
-
-    }
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-  }
-
-
-  return [
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0
-  ];
-
-}
-
-
-function saveVotes() {
-
-  localStorage.setItem(
-
-    "haryanaBaziVotes",
-
-    JSON.stringify(votes)
-
-  );
-
-}
-
-
-/* =========================================================
-   CREATE VOTE BUTTONS
-   ========================================================= */
-
-function renderVoteButtons() {
-
-  const grid =
-    document.getElementById(
-      "numberGrid"
-    );
-
-
-  if (!grid) {
+    `;
 
     return;
 
   }
 
 
-  grid.innerHTML = "";
+  patti.forEach(
+    function(item) {
+
+      table.innerHTML += `
+
+        <tr>
+
+          <td>
+            ${escapeHTML(item.number)}
+          </td>
+
+          <td>
+            ${escapeHTML(item.information)}
+          </td>
+
+          <td>
+            ${escapeHTML(item.description)}
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+}
+
+
+renderPatti();
+
+
+/* =========================================================
+   OLD INFORMATION
+========================================================= */
+
+function renderOld(searchText = "") {
+
+  const list =
+    document.getElementById(
+      "oldList"
+    );
+
+
+  if (!list) {
+
+    return;
+
+  }
+
+
+  const old =
+    Array.isArray(siteData.old)
+      ? siteData.old
+      : [];
+
+
+  const query =
+    searchText
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    old.filter(
+      function(item) {
+
+        const text =
+          [
+            item.date,
+            item.title,
+            item.description
+          ]
+          .join(" ")
+          .toLowerCase();
+
+
+        return text.includes(query);
+
+      }
+    );
+
+
+  list.innerHTML = "";
+
+
+  if (filtered.length === 0) {
+
+    list.innerHTML = `
+
+      <div class="item-card">
+
+        <p>
+          No old information available.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  filtered.forEach(
+    function(item) {
+
+      list.innerHTML += `
+
+        <article class="item-card">
+
+          <div class="meta">
+            ${escapeHTML(item.date || "")}
+          </div>
+
+          <h3>
+            ${escapeHTML(item.title || "Information")}
+          </h3>
+
+          <p>
+            ${escapeHTML(item.description || "")}
+          </p>
+
+        </article>
+
+      `;
+
+    }
+  );
+
+}
+
+
+renderOld();
+
+
+const oldSearch =
+  document.getElementById(
+    "oldSearch"
+  );
+
+
+if (oldSearch) {
+
+  oldSearch.addEventListener(
+    "input",
+    function() {
+
+      renderOld(
+        this.value
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   LUCKY NUMBER WHEEL
+========================================================= */
+
+let wheelRotation = 0;
+
+let spinning = false;
+
+
+const wheel =
+  document.getElementById(
+    "wheel"
+  );
+
+
+const spinBtn =
+  document.getElementById(
+    "spinBtn"
+  );
+
+
+const spinResult =
+  document.getElementById(
+    "spinResult"
+  );
+
+
+const spinNotice =
+  document.getElementById(
+    "spinNotice"
+  );
+
+
+function spinWheel() {
+
+  if (
+    !wheel ||
+    !spinBtn ||
+    spinning
+  ) {
+
+    return;
+
+  }
+
+
+  spinning = true;
+
+
+  spinBtn.disabled =
+    true;
+
+
+  if (spinResult) {
+
+    spinResult.textContent =
+      "";
+
+    spinResult.classList.remove(
+      "show"
+    );
+
+  }
+
+
+  if (spinNotice) {
+
+    spinNotice.textContent =
+      "Spinning...";
+
+  }
+
+
+  const result =
+    Math.floor(
+      Math.random() * 10
+    );
+
+
+  const extraTurns =
+    5 +
+    Math.floor(
+      Math.random() * 4
+    );
+
+
+  const resultRotation =
+    result * 36;
+
+
+  wheelRotation +=
+    extraTurns * 360 +
+    resultRotation;
+
+
+  wheel.style.transform =
+    `rotate(${wheelRotation}deg)`;
+
+
+  setTimeout(
+    function() {
+
+      if (spinResult) {
+
+        spinResult.textContent =
+          result;
+
+        spinResult.classList.add(
+          "show"
+        );
+
+      }
+
+
+      if (spinNotice) {
+
+        spinNotice.textContent =
+          "Spin completed.";
+
+      }
+
+
+      spinning = false;
+
+      spinBtn.disabled =
+        false;
+
+    },
+    4300
+  );
+
+}
+
+
+if (spinBtn) {
+
+  spinBtn.addEventListener(
+    "click",
+    spinWheel
+  );
+
+}
+
+
+/* =========================================================
+   VOTING
+========================================================= */
+
+const numberGrid =
+  document.getElementById(
+    "numberGrid"
+  );
+
+
+const voteBtn =
+  document.getElementById(
+    "voteBtn"
+  );
+
+
+const voteNotice =
+  document.getElementById(
+    "voteNotice"
+  );
+
+
+const voteResults =
+  document.getElementById(
+    "voteResults"
+  );
+
+
+let selectedVote =
+  null;
+
+
+let votes;
+
+
+try {
+
+  votes =
+    JSON.parse(
+      localStorage.getItem(
+        "haryanaBaziVotes"
+      ) ||
+      "[0,0,0,0,0,0,0,0,0,0]"
+    );
+
+}
+catch {
+
+  votes =
+    [0,0,0,0,0,0,0,0,0,0];
+
+}
+
+
+if (
+  !Array.isArray(votes) ||
+  votes.length !== 10
+) {
+
+  votes =
+    [0,0,0,0,0,0,0,0,0,0];
+
+}
+
+
+/* CREATE NUMBER BUTTONS */
+
+function createNumberButtons() {
+
+  if (!numberGrid) {
+
+    return;
+
+  }
+
+
+  numberGrid.innerHTML = "";
 
 
   for (
@@ -1173,18 +1450,48 @@ function renderVoteButtons() {
 
     button.addEventListener(
       "click",
-      function () {
+      function() {
 
-        selectVote(
-          number,
-          this
+        document
+          .querySelectorAll(
+            ".number-btn"
+          )
+          .forEach(
+            function(item) {
+
+              item.classList.remove(
+                "selected"
+              );
+
+            }
+          );
+
+
+        this.classList.add(
+          "selected"
         );
+
+
+        selectedVote =
+          Number(
+            this.dataset.number
+          );
+
+
+        if (voteNotice) {
+
+          voteNotice.textContent =
+            "Number " +
+            selectedVote +
+            " selected.";
+
+        }
 
       }
     );
 
 
-    grid.appendChild(
+    numberGrid.appendChild(
       button
     );
 
@@ -1193,84 +1500,94 @@ function renderVoteButtons() {
 }
 
 
-/* =========================================================
-   SELECT VOTE
-   ========================================================= */
-
-function selectVote(
-  number,
-  button
-) {
-
-  selectedVote =
-    number;
+createNumberButtons();
 
 
-  document
-    .querySelectorAll(
-      ".number-btn"
-    )
-    .forEach(
-      item => {
+/* RENDER VOTE RESULTS */
 
-        item.classList.remove(
-          "selected"
-        );
+function renderVoteResults() {
 
-      }
+  if (!voteResults) {
+
+    return;
+
+  }
+
+
+  const total =
+    votes.reduce(
+      function(sum, value) {
+
+        return sum + value;
+
+      },
+      0
     );
 
 
-  button.classList.add(
-    "selected"
-  );
+  voteResults.innerHTML =
+    "";
 
 
-  const notice =
-    document.getElementById(
-      "voteNotice"
-    );
+  for (
+    let number = 0;
+    number <= 9;
+    number++
+  ) {
+
+    const percentage =
+      total === 0
+        ? "0.0"
+        : (
+            votes[number] /
+            total *
+            100
+          ).toFixed(1);
 
 
-  if (notice) {
+    voteResults.innerHTML += `
 
-    notice.textContent =
-      `Selected number: ${number}`;
+      <tr>
+
+        <td>
+          ${number}
+        </td>
+
+        <td>
+          ${votes[number]}
+        </td>
+
+        <td>
+          ${percentage}%
+        </td>
+
+      </tr>
+
+    `;
 
   }
 
 }
 
 
-/* =========================================================
-   CONFIRM VOTE
-   ========================================================= */
+renderVoteResults();
 
-const voteBtn =
-  document.getElementById(
-    "voteBtn"
-  );
 
+/* CONFIRM VOTE */
 
 if (voteBtn) {
 
   voteBtn.addEventListener(
     "click",
-    function () {
-
-      const notice =
-        document.getElementById(
-          "voteNotice"
-        );
-
+    function() {
 
       if (
         selectedVote === null
       ) {
 
-        if (notice) {
+        if (voteNotice) {
 
-          notice.textContent =
+          voteNotice.textContent =
             "Please select a number first.";
 
         }
@@ -1280,273 +1597,4 @@ if (voteBtn) {
       }
 
 
-      votes[selectedVote]++;
-
-
-      saveVotes();
-
-
-      if (notice) {
-
-        notice.textContent =
-          "Your vote has been recorded.";
-
-      }
-
-
-      renderVoteResults();
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   VOTE RESULTS
-   ========================================================= */
-
-function renderVoteResults() {
-
-  const tbody =
-    document.getElementById(
-      "voteResults"
-    );
-
-
-  if (!tbody) {
-
-    return;
-
-  }
-
-
-  const total =
-    votes.reduce(
-      (sum, value) =>
-        sum + value,
-      0
-    );
-
-
-  tbody.innerHTML = "";
-
-
-  for (
-    let number = 0;
-    number <= 9;
-    number++
-  ) {
-
-    const count =
-      votes[number] || 0;
-
-
-    const percentage =
-      total === 0
-        ? 0
-        : (
-            count /
-            total *
-            100
-          ).toFixed(1);
-
-
-    const row =
-      document.createElement(
-        "tr"
-      );
-
-
-    row.innerHTML = `
-
-      <td>
-        ${number}
-      </td>
-
-      <td>
-        ${count}
-      </td>
-
-      <td>
-        ${percentage}%
-      </td>
-
-    `;
-
-
-    tbody.appendChild(
-      row
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   LUCKY WHEEL
-   ========================================================= */
-
-let wheelRotation =
-  0;
-
-
-let spinInProgress =
-  false;
-
-
-const wheel =
-  document.getElementById(
-    "wheel"
-  );
-
-
-const spinBtn =
-  document.getElementById(
-    "spinBtn"
-  );
-
-
-const spinResult =
-  document.getElementById(
-    "spinResult"
-  );
-
-
-if (spinBtn) {
-
-  spinBtn.addEventListener(
-    "click",
-    spinWheel
-  );
-
-}
-
-
-function spinWheel() {
-
-  if (
-    spinInProgress
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    !wheel
-  ) {
-
-    return;
-
-  }
-
-
-  spinInProgress =
-    true;
-
-
-  spinBtn.disabled =
-    true;
-
-
-  if (spinResult) {
-
-    spinResult.textContent =
-      "";
-
-  }
-
-
-  const result =
-    Math.floor(
-      Math.random() * 10
-    );
-
-
-  const segment =
-    36;
-
-
-  const extraTurns =
-    5 +
-    Math.floor(
-      Math.random() * 3
-    );
-
-
-  const targetRotation =
-    extraTurns * 360 +
-    (
-      360 -
-      result * segment
-    );
-
-
-  wheelRotation +=
-    targetRotation;
-
-
-  wheel.style.transform =
-    `rotate(${wheelRotation}deg)`;
-
-
-  setTimeout(
-    function () {
-
-      if (spinResult) {
-
-        spinResult.textContent =
-          `Lucky Number: ${result}`;
-
-      }
-
-
-      spinInProgress =
-        false;
-
-
-      spinBtn.disabled =
-        false;
-
-    },
-    4300
-  );
-
-}
-
-
-/* =========================================================
-   REFRESH
-   ========================================================= */
-
-const refreshBtn =
-  document.getElementById(
-    "refreshBtn"
-  );
-
-
-if (refreshBtn) {
-
-  refreshBtn.addEventListener(
-    "click",
-    function () {
-
-      window.location.reload();
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   UTILITY FUNCTIONS
-   ========================================================= */
-
-function escapeHTML(value) {
-
-  if (
-    value === null ||
+ 
