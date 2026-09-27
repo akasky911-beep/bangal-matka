@@ -2159,3 +2159,61 @@ footer .container {
   }
 
 }
+/* ===== PROFESSIONAL FINISH ===== */
+
+body {
+  overflow-x: hidden;
+}
+
+.container {
+  width: min(94%, 1180px);
+  margin: 0 auto;
+}
+
+button,
+.nav-item,
+.more-btn {
+  transition: all 0.2s ease;
+}
+
+button:hover,
+.nav-item:hover,
+.more-btn:hover {
+  transform: translateY(-1px);
+}
+
+.card,
+.item-card {
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(35, 50, 55, 0.06);
+}
+
+.site-header {
+  overflow: hidden;
+}
+
+.banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: calc(100% - 24px);
+  }
+
+  .card,
+  .item-card {
+    border-radius: 16px;
+  }
+
+  .banner img {
+    width: 100%;
+  }
+
+  button {
+    min-height: 44px;
+  }
+}
