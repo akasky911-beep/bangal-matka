@@ -1832,3 +1832,330 @@ td {
   }
 
                        }
+/* =========================================================
+   FINAL PREMIUM MOBILE POLISH
+========================================================= */
+
+:root {
+  --bg: #f4f7f8;
+  --card: #ffffff;
+  --text: #26343a;
+  --muted: #718087;
+  --border: #e1e8ea;
+  --soft: #edf4f5;
+  --accent: #b08a3c;
+}
+
+
+/* PAGE */
+body {
+  background: #f4f7f8;
+  color: var(--text);
+}
+
+
+/* BANNER */
+.banner {
+  background: #fff;
+  position: relative;
+}
+
+.banner img {
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* BRAND BAR */
+.livebar {
+  min-height: 82px;
+  padding: 10px 0;
+  background: #fff;
+}
+
+.brand-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #e6f1f2, #c8dfe2);
+  color: #536d72;
+  box-shadow: 0 5px 18px rgba(40, 60, 65, .08);
+}
+
+.brand-name {
+  font-size: 21px;
+  letter-spacing: -.3px;
+}
+
+.brand-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+
+/* REFRESH BUTTON */
+.ghost-btn {
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #dce5e7;
+  color: #526268;
+  box-shadow: 0 4px 15px rgba(30, 50, 55, .05);
+}
+
+.ghost-btn:active {
+  transform: scale(.97);
+}
+
+
+/* TICKER */
+.ticker {
+  background: #eef4f5;
+  color: #65757a;
+  height: 46px;
+  display: flex;
+  align-items: center;
+}
+
+.ticker div {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+
+/* NAVIGATION */
+.nav {
+  min-height: 64px;
+  gap: 6px;
+  padding: 7px 0;
+  background: #fff;
+}
+
+.nav-item {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 15px;
+  color: #66757a;
+  font-size: 15px;
+}
+
+.nav-item.active {
+  background: linear-gradient(145deg, #e8f2f3, #dcebed);
+  color: #496268;
+  box-shadow:
+    inset 0 0 0 1px #d4e3e5,
+    0 3px 12px rgba(40, 70, 75, .06);
+}
+
+
+/* MAIN CONTENT */
+main,
+.page {
+  background: transparent;
+}
+
+.container {
+  width: min(1120px, calc(100% - 32px));
+}
+
+
+/* SECTION HEADINGS */
+h1,
+h2,
+h3 {
+  color: #2e3c42;
+  letter-spacing: -.4px;
+}
+
+.page-title,
+.section-title {
+  margin-bottom: 8px;
+}
+
+
+/* ALL CARDS */
+.card,
+.item-card {
+  background: #fff;
+  border: 1px solid #e0e8ea;
+  border-radius: 22px;
+  box-shadow:
+    0 8px 28px rgba(35, 55, 60, .055);
+}
+
+.item-card {
+  padding: 24px;
+}
+
+
+/* TODAY CARD */
+#todayDate {
+  color: #78878b;
+  font-weight: 700;
+  letter-spacing: .8px;
+}
+
+#todayTitle {
+  color: #2d3b40;
+}
+
+#todayContent {
+  color: #718086;
+}
+
+
+/* META */
+.meta {
+  color: #9a7b3c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+
+/* LINKS / VIEW ALL */
+a,
+.view-all {
+  color: #9a7834;
+}
+
+
+/* FOOTER */
+footer {
+  margin-top: 55px;
+  background: #fff;
+  border-top: 1px solid #e0e7e9;
+}
+
+footer .container {
+  padding-top: 48px;
+  padding-bottom: 35px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  margin: 25px 0;
+}
+
+.footer-links button {
+  border: 0;
+  background: transparent;
+  color: #68777c;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 6px;
+}
+
+.footer-links button:hover {
+  color: #9a7834;
+}
+
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+  .container {
+    width: calc(100% - 24px);
+  }
+
+  .banner img {
+    max-height: 230px;
+  }
+
+  .livebar {
+    min-height: 76px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .brand-name {
+    font-size: 19px;
+  }
+
+  .ghost-btn {
+    padding: 0 15px;
+    font-size: 14px;
+  }
+
+  .nav {
+    gap: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    flex: 0 0 auto;
+    padding: 0 17px;
+    font-size: 14px;
+  }
+
+  .card,
+  .item-card {
+    border-radius: 19px;
+  }
+
+  .item-card {
+    padding: 20px;
+  }
+
+  footer {
+    margin-top: 40px;
+  }
+
+  footer .container {
+    padding-top: 38px;
+    padding-bottom: 28px;
+  }
+
+  .footer-links {
+    gap: 5px 17px;
+    margin: 22px 0;
+  }
+
+  .footer-links button {
+    font-size: 14px;
+  }
+}
+
+
+/* SMALL PHONES */
+@media (max-width: 380px) {
+
+  .brand-name {
+    font-size: 17px;
+  }
+
+  .brand-subtitle {
+    font-size: 11px;
+  }
+
+  .ghost-btn {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .nav-item {
+    padding: 0 14px;
+  }
+
+}
