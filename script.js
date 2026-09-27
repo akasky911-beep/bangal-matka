@@ -1595,6 +1595,71 @@ if (voteBtn) {
         return;
 
       }
+      votes[selectedVote]++;
 
+      localStorage.setItem(
+        "haryanaBaziVotes",
+        JSON.stringify(votes)
+      );
+
+      if (voteNotice) {
+
+        voteNotice.textContent =
+          "Vote recorded successfully.";
+
+      }
+
+      document
+        .querySelectorAll(".number-btn")
+        .forEach(function(item) {
+
+          item.classList.remove("selected");
+
+        });
+
+      selectedVote = null;
+
+      renderVoteResults();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
+const refreshBtn =
+  document.getElementById("refreshBtn");
+
+if (refreshBtn) {
+
+  refreshBtn.addEventListener(
+    "click",
+    function() {
+
+      window.location.reload();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FINAL INITIALIZATION
+========================================================= */
+
+renderSettings();
+renderToday();
+renderTips();
+renderUpdates();
+renderAbout();
+renderContact();
+renderPatti();
+renderOld();
+renderVoteResults();
 
  
